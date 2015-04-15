@@ -1,0 +1,6 @@
+﻿<div class="controlContainer" style="visibility:hidden;">
+	<div id="adc_{%= CurrentADC.InstanceId %}" class="adc-grid">
+        {%:= CurrentADC.GetContent("dynamic/standard_numeric.html").ToText()%}
+        <div style="clear:both;"></div>
+    </div>
+</div>

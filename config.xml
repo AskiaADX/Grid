@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control xmlns="http://www.askia.com/ADCSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/ADCSchema http://www.askia.com/Downloads/dev/schemas/adc2.0/Config.xsd"
+         version="2.0.0"
+         askiaCompat="5.3.3">
+  <info>
+    <name>adc2-grid</name>
+    <guid>1a69f3de-ba10-461f-9516-0a1cb1feb841</guid>
+    <version>1.0.0</version>
+    <date>2015-02-13</date>
+    <description>
+      <![CDATA[
+        Describe your ADC here
+        	New ADC grid control
+        Tested in:
+          List the browsers name and version where the ADC should work on.
+          
+        Dependencies:
+          - Name of the 3rd party resource. Version. URL 
+          - Name of the 3rd party resource. Version. URL
+        
+        Notes:
+          Special notes about incompatibility or warnings
+      ]]>
+    </description>
+    <author>
+      <![CDATA[Paul Ferreira <paulf@askia.com>]]>
+    </author>
+    <company>Askia</company>
+    <helpURL>https://dev.askia.com</helpURL>
+    <site>http://www.askia.com</site>
+    <categories>
+      <category>General</category>
+    </categories>
+    <style width="400" height="300"/>
+    <constraints>
+      <constraint on="questions" numeric="true" single="true" />
+      <constraint on="controls" responseblock="true" textbox="true" />
+    </constraints>
+  </info>
+
+  <outputs defaultOutput="fallback">
+      
+	<output id="standard">
+      <description><![CDATA[Output when the browser support Javascript]]></description>
+      <condition><![CDATA[Browser.Support("javascript")]]></condition>
+      <content fileName="grid.css" type="css" mode="static" position="head" />
+	  <content fileName="standard.css" type="css" mode="dynamic" position="head" />
+	  <content fileName="standard.html" type="html" mode="dynamic" position="placeholder" />
+	  <content fileName="standard_numeric.html" type="html" mode="dynamic" position="none" />
+      <content fileName="es5-shim.min.js" type="javascript" mode="share" position="head">
+        <yield>
+          <![CDATA[
+          <!--[if lt IE 10]>
+            <script type="text/javascript" src="{%= CurrentADC.URLTo("share/es5-shim.min.js") %}"></script>
+          <![endif]-->
+          ]]>
+        </yield>
+      </content>
+      <content fileName="jquery-1.11.1.min.js" type="javascript" mode="share" position="head"/>
+	  <content fileName="modernizr.custom.20117.js" type="javascript" mode="static" position="head"/>
+	  <content fileName="jquery-ui-1.10.4.drag.min.js" type="javascript" mode="static" position="head"/>
+	  <content fileName="jquery.ui.touch-punch.min.js" type="javascript" mode="share" position="head"/>
+	  <content fileName="jquery.transit.min.js" type="javascript" mode="share" position="head"/>
+      <content fileName="grid.js" type="javascript" mode="static" position="head"/>
+	  <content fileName="standard.js" type="javascript" mode="dynamic" position="foot" />
+	  <content fileName="standard_numeric.js" type="javascript" mode="dynamic" position="none" />
+	  <content fileName="crosshairs.png" type="image" mode="static" position="none" />
+    </output>
+	
+	<output id="fallback">
+      <description><![CDATA[Fallback when the browser doesn&acute;t support Javascript]]></description>
+      <condition><![CDATA[Not(Browser.Support("javascript"))]]></condition>
+	  <content fileName="default.css" type="css" mode="static" position="head" />
+      <content fileName="fallback_numeric.html" type="html" mode="dynamic" position="none" />
+      <content fileName="default.html" type="html" mode="dynamic" position="placeholder" />
+    </output>
+  </outputs>
+
+
+  <properties>
+	<category id="general" name="General">
+	  <property xsi:type="standardProperty" id="stackResponses" name="Stack Responses" type="boolean" mode="static">
+        <description>
+          <![CDATA[
+	          Whether the resonses are in a single pile
+			]]>
+        </description>
+        <value>false</value>
+      </property>
+	  <property xsi:type="standardProperty" id="autoStackWidth" name="Automatic Stacking Width" type="number" mode="static">
+        <description>
+          <![CDATA[
+	          When set will turn on Stack Responses when the screen is below a certain width
+			]]>
+        </description>
+        <value>400</value>
+      </property>
+	  <property xsi:type="standardProperty" id="selectNextResponse" name="Automatically Select Next Response" type="boolean" mode="static">
+        <description>
+          <![CDATA[
+	          Whether to automatically select the next response
+			]]>
+        </description>
+        <value>false</value>
+      </property>
+      <property xsi:type="standardProperty" id="fontSize" name="Font Size" type="string" mode="static">
+        <description>
+          <![CDATA[The font size for the control]]>
+        </description>
+        <value>14px</value>
+      </property>
+      <property xsi:type="standardProperty" id="controlWidth" name="Control Width" type="string" mode="static">
+        <description>
+          <![CDATA[The width of the control]]>
+        </description>
+        <value>100%</value>
+      </property>
+      <property xsi:type="standardProperty" id="maxWidth" name="Max Width" type="string" mode="static">
+        <description>
+          <![CDATA[The maximum width of the control]]>
+        </description>
+        <value>100%</value>
+      </property>
+	  <property xsi:type="standardProperty" id="controlAlign" name="Control Alignment" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The alignment of the control
+	        ]]>
+        </description>
+        <value>left</value>
+        <options>
+          <option value="left" text="Left"/>
+          <option value="center" text="Center"/>
+          <option value="right" text="Right"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="columns" name="Columns" type="number" mode="static">
+        <description>
+          <![CDATA[The number of columns of responses]]>
+        </description>
+        <value>0</value>
+      </property>
+      <property xsi:type="standardProperty" id="textAlign" name="Text Alignment" type="string" mode="static">
+        <description>
+          <![CDATA[The alignment of the text in the responses]]>
+        </description>
+        <value>left</value>
+        <options>
+          <option value="left" text="Left"/>
+          <option value="center" text="Center"/>
+          <option value="right" text="Right"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="imageAlign" name="Image Alignment" type="string" mode="static">
+        <description>
+          <![CDATA[The alignment of the text in the responses]]>
+        </description>
+        <value>right</value>
+        <options>
+          <option value="left" text="Left"/>
+          <option value="center" text="Center"/>
+          <option value="right" text="Right"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="borderRadius" name="Border Radius" type="string" mode="static">
+        <description>
+          <![CDATA[The amount of curve on the response corners]]>
+        </description>
+        <value>2px</value>
+        <options>
+          <option value="0px" text="0"/>
+		  <option value="2px" text="2"/>
+          <option value="5px" text="5"/>
+          <option value="10px" text="10"/>
+          <option value="15px" text="15"/>
+          <option value="20px" text="20"/>
+          <option value="25px" text="25"/>
+          <option value="30px" text="30"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="animateResponses" name="Animate Responses" type="boolean" mode="static">
+        <description>
+          <![CDATA[Whether the resonses fly into the screen]]>
+        </description>
+        <value>false</value>
+      </property>
+      <property xsi:type="standardProperty" id="animationSpeed" name="Animation Speed" type="string" mode="static">
+        <description>
+          <![CDATA[Speed of the animation]]>
+        </description>
+        <value>fast</value>
+        <options>
+          <option value="very fast" text="Very Fast"/>
+          <option value="fast" text="Fast"/>
+          <option value="medium" text="Medium"/>
+          <option value="slow" text="Slow"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="autoForward" name="Auto Forward" type="boolean" mode="static">
+        <description>
+          <![CDATA[Whether the question continues to the next automatically if a single choice question]]>
+        </description>
+        <value>false</value>
+      </property>
+    </category>
+	
+	<category id="grid" name="Grid and drop area">
+	  <property xsi:type="standardProperty" id="gridSquares" name="Number of grid squares per row" type="number" mode="static">
+		  <description>
+			<![CDATA[This will set the number of grid squares per row / column]]>
+		  </description>
+		  <value>5</value>
+	  </property>
+	  <property xsi:type="standardProperty" id="gridSquareBorderColour" name="Grid Square Border Colour" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Border colour for grid squares
+          ]]>
+        </description>
+        <value>255,255,255</value>
+      </property>
+	  <property xsi:type="standardProperty" id="gridSquareBorderThickness" name="Grid Square Border Thickness" type="string" mode="static">
+        <description>
+          <![CDATA[The thickness of the border around the grid squares]]>
+        </description>
+        <value>1px</value>
+        <options>
+          <option value="1px" text="1px"/>
+          <option value="2px" text="2px"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="gridSquareBorderStyle" name="Grid Square Border Style" type="string" mode="static">
+        <description>
+          <![CDATA[The style of the border around the grid squares]]>
+        </description>
+        <value>solid</value>
+        <options>
+          <option value="solid" text="Solid"/>
+          <option value="dashed" text="Dashed"/>
+          <option value="dotted" text="Dotted"/>
+        </options>
+      </property>
+	  
+	  <property xsi:type="standardProperty" id="dropAreaContainerWidthHeight" name="Drop Area Container Width and height" type="number" mode="static">
+        <description>
+          <![CDATA[
+	          Set drop area container width
+			]]>
+        </description>
+        <value>342px</value>
+      </property>
+	  <property xsi:type="standardProperty" id="dropAreaColourPrimary" name="Drop Area Colour Primary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Primary colour of the drop area
+          ]]>
+        </description>
+        <value>0,147,234</value>
+      </property>
+      <property xsi:type="standardProperty" id="dropAreaColourSecondary" name="Drop Area Colour Secondary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Secondary colour of the drop area
+          ]]>
+        </description>
+        <value>0,124,196</value>
+      </property>
+	  <property xsi:type="standardProperty" id="dropAreaBorderColour" name="Drop Area Border Colour" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Border colour for selected drop area
+          ]]>
+        </description>
+        <value>161,167,173</value>
+      </property>
+	  <property xsi:type="standardProperty" id="dropAreaBorderThickness" name="Drop Area Border Thickness" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The thickness of the border around the drop area
+	        ]]>
+        </description>
+        <value>none</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="1px" text="1px"/>
+		  <option value="2px" text="2px"/>
+		  <option value="3px" text="3px"/>
+		  <option value="4px" text="4px"/>
+		  <option value="5px" text="5px"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="dropAreaBorderStyle" name="Drop Area Border Style" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The style of the border around the drop area
+	        ]]>
+        </description>
+        <value>none</value>
+        <options>
+		  <option value="none" text="None"/>
+          <option value="solid" text="Solid"/>
+          <option value="dashed" text="Dashed"/>
+		  <option value="dotted" text="Dotted"/>
+		  <option value="double" text="Double"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="dropAreaBorderRadius" name="Drop Area Border Radius" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The amount of curve on the drop area
+	        ]]>
+        </description>
+        <value>2px</value>
+        <options>
+          <option value="0px" text="0"/>
+		  <option value="2px" text="2"/>
+          <option value="5px" text="5"/>
+          <option value="10px" text="10"/>
+		  <option value="15px" text="15"/>
+		  <option value="20px" text="20"/>
+		  <option value="25px" text="25"/>
+		  <option value="30px" text="30"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="dropAreaShadow" name="Drop Area Drop Shadow" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The visibility of a dropshadow under the drop area
+	        ]]>
+        </description>
+        <value>none</value>
+        <options>
+          <option value="0px 2px 3px 0px rgba(0,0,0,0.75)" text="On"/>
+          <option value="none" text="Off"/>
+        </options>
+      </property>	
+	</category>
+	
+	<category id="startArea" name="Start Area">
+	  <property xsi:type="standardProperty" id="startAreaPosition" name="Start Area Position" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The position of the start area in relation to the grid
+	        ]]>
+        </description>
+        <value>left</value>
+        <options>
+          <option value="left" text="Left"/>
+		  <option value="right" text="Right"/>
+          <option value="top" text="Top"/>
+          <option value="bottom" text="Bottom"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="startAreaWidth" name="Start Area Width" type="number" mode="static">
+        <description>
+          <![CDATA[
+	          Set start area width
+			]]>
+        </description>
+        <value>50%</value>
+      </property>
+	  <property xsi:type="standardProperty" id="startAreaColourPrimary" name="Start Area Colour Primary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Primary colour of the start area
+          ]]>
+        </description>
+        <value>0,147,234</value>
+      </property>
+      <property xsi:type="standardProperty" id="startAreaColourSecondary" name="Start Area Colour Secondary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Secondary colour of the start area
+          ]]>
+        </description>
+        <value>0,124,196</value>
+      </property>
+	  <property xsi:type="standardProperty" id="startAreaBorderColour" name="Start Area Border Colour" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Border colour for selected start area
+          ]]>
+        </description>
+        <value>161,167,173</value>
+      </property>
+	  <property xsi:type="standardProperty" id="startAreaBorderThickness" name="Start Area Border Thickness" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The thickness of the border around the start area
+	        ]]>
+        </description>
+        <value>1px</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="1px" text="1px"/>
+		  <option value="2px" text="2px"/>
+		  <option value="3px" text="3px"/>
+		  <option value="4px" text="4px"/>
+		  <option value="5px" text="5px"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="startAreaBorderStyle" name="Start Area Border Style" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The style of the border around the start area
+	        ]]>
+        </description>
+        <value>solid</value>
+        <options>
+		  <option value="none" text="None"/>
+          <option value="solid" text="Solid"/>
+          <option value="dashed" text="Dashed"/>
+		  <option value="dotted" text="Dotted"/>
+		  <option value="double" text="Double"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="startAreaBorderRadius" name="Start Area Border Radius" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The amount of curve on the start area
+	        ]]>
+        </description>
+        <value>2px</value>
+        <options>
+          <option value="0px" text="0"/>
+		  <option value="2px" text="2"/>
+          <option value="5px" text="5"/>
+          <option value="10px" text="10"/>
+		  <option value="15px" text="15"/>
+		  <option value="20px" text="20"/>
+		  <option value="25px" text="25"/>
+		  <option value="30px" text="30"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="startAreaShadow" name="Start Area Drop Shadow" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The visibility of a dropshadow under the start area
+	        ]]>
+        </description>
+        <value>none</value>
+        <options>
+          <option value="0px 2px 3px 0px rgba(0,0,0,0.75)" text="On"/>
+          <option value="none" text="Off"/>
+        </options>
+      </property>
+	</category>
+	<category id="axisLabels" name="Axis Labels">
+	  <property xsi:type="standardProperty" id="maxLabelWidth" name="Max Label Width" type="string" mode="static">
+        <description>
+          <![CDATA[Sets the maximum width for the axis labels]]>
+        </description>
+        <value></value>
+      </property>
+	  <property xsi:type="standardProperty" id="maxLabelHeight" name="Max Label Height" type="string" mode="static">
+        <description>
+          <![CDATA[Sets the maximum height for the axis labels]]>
+        </description>
+        <value></value>
+      </property>
+	  <property xsi:type="standardProperty" id="labelPadding" name="Label Padding" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will set the padding for the labels]]>
+        </description>
+        <value>10px</value>
+      </property>
+		<property xsi:type="standardProperty" id="leftLabel" name="Left Label" type="string" mode="static">
+		  <description>
+			<![CDATA[Left Label]]>
+		  </description>
+		  <value>Left</value>
+		</property>
+		<property xsi:type="standardProperty" id="rightLabel" name="Right Label" type="string" mode="static">
+		  <description>
+			<![CDATA[Right Label]]>
+		  </description>
+		  <value>Right</value>
+		</property>
+		<property xsi:type="standardProperty" id="topLabel" name="Top Label" type="string" mode="static">
+		  <description>
+			<![CDATA[Top Label]]>
+		  </description>
+		  <value>Top</value>
+		</property>
+		<property xsi:type="standardProperty" id="bottomLabel" name="Bottom Label" type="string" mode="static">
+		  <description>
+			<![CDATA[Bottom Label]]>
+		  </description>
+		  <value>Bottom</value>
+		</property>
+		
+	  <property xsi:type="standardProperty" id="labelColourPrimary" name="Label Colour Primary" type="color" mode="static">
+        <description>
+          <![CDATA[Primary colour of the label]]>
+        </description>
+        <value>247,247,247</value>
+      </property>
+      <property xsi:type="standardProperty" id="labelColourSecondary" name="Label Colour Secondary" type="color" mode="static">
+        <description>
+          <![CDATA[Secondary colour of the label]]>
+        </description>
+        <value>247,247,247</value>
+      </property>
+      <property xsi:type="standardProperty" id="labelFontColour" name="Label Font Colour" type="color" mode="static">
+        <description>
+          <![CDATA[Lable font colour]]>
+        </description>
+        <value>68,68,68</value>
+      </property>
+      <property xsi:type="standardProperty" id="labelBorderColour" name="Label Border Colour" type="color" mode="static">
+        <description>
+          <![CDATA[Label border colour]]>
+        </description>
+        <value>161,167,173</value>
+      </property>
+      <property xsi:type="standardProperty" id="labelBorderThickness" name="Label Border Thickness" type="string" mode="static">
+        <description>
+          <![CDATA[The thickness of the border around the labels]]>
+        </description>
+        <value>1px</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="1px" text="1px"/>
+          <option value="2px" text="2px"/>
+          <option value="3px" text="3px"/>
+          <option value="4px" text="4px"/>
+          <option value="5px" text="5px"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="labelBorderStyle" name="Label Border Style" type="string" mode="static">
+        <description>
+          <![CDATA[The style of the border around the labels]]>
+        </description>
+        <value>solid</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="solid" text="Solid"/>
+          <option value="dashed" text="Dashed"/>
+          <option value="dotted" text="Dotted"/>
+          <option value="double" text="Double"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="labelShadow" name="Label Drop Shadow" type="string" mode="static">
+        <description>
+          <![CDATA[The visibility of a dropshadow under the labels]]>
+        </description>
+        <value>none</value>
+        <options>
+          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="none" text="Off"/>
+        </options>
+      </property>
+	</category>
+	<category id="responseLayout" name="Response Layout">
+	  <property xsi:type="standardProperty" id="responseTextPosition" name="Label Text Position" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          Set position for text in responses in relation to images
+	        ]]>
+        </description>
+        <value>bottom</value>
+		<options>
+          <option value="top" text="Top"/>
+          <option value="left" text="Left"/>
+		  <option value="bottom" text="Bottom"/>
+		  <option value="right" text="Right"/>
+        </options>
+      </property>
+	</category>
+    <category id="responses" name="Responses">
+	  <property xsi:type="standardProperty" id="scaleOnTarget" name="Scale On Target" type="number" mode="static">
+        <description>
+          <![CDATA[The is the scale by which the response will reduce in size once placed on the grid]]>
+        </description>
+        <value>0.5</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseWidth" name="Response Width" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will force the width of the reponses]]>
+        </description>
+        <value>auto</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseHeight" name="Response Height" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will force the height of the reponses]]>
+        </description>
+        <value>auto</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseMargin" name="Response Margin" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will set the margin around the responses]]>
+        </description>
+        <value>10px</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responsePadding" name="Response Padding" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will set the padding for the responses]]>
+        </description>
+        <value>10px</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseTextPadding" name="Response Text Padding" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will set the padding for the response text]]>
+        </description>
+        <value>10px</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseImagePadding" name="Response Image Padding" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will set the padding for the response images]]>
+        </description>
+        <value>10px</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseTextLineHeight" name="Response Text Line Height" type="string" mode="static">
+        <description>
+          <![CDATA[When set this will force the height of the reponses]]>
+        </description>
+        <value>100%</value>
+      </property>
+	  <property xsi:type="standardProperty" id="displayResponseText" name="Display Response Text" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          Display response text
+	        ]]>
+        </description>
+        <value>block</value>
+		<options>
+          <option value="block" text="Yes"/>
+          <option value="none" text="No"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="responseColourPrimary" name="Response Colour Primary" type="color" mode="static">
+        <description>
+          <![CDATA[Primary colour of the item]]>
+        </description>
+        <value>247,247,247</value>
+      </property>
+      <property xsi:type="standardProperty" id="responseColourSecondary" name="Response Colour Secondary" type="color" mode="static">
+        <description>
+          <![CDATA[Secondary colour of the item]]>
+        </description>
+        <value>247,247,247</value>
+      </property>
+      <property xsi:type="standardProperty" id="fontColour" name="Response Font Colour" type="color" mode="static">
+        <description>
+          <![CDATA[Font colour]]>
+        </description>
+        <value>68,68,68</value>
+      </property>
+      <property xsi:type="standardProperty" id="borderColour" name="Response Border Colour" type="color" mode="static">
+        <description>
+          <![CDATA[Border colour]]>
+        </description>
+        <value>161,167,173</value>
+      </property>
+      <property xsi:type="standardProperty" id="borderThickness" name="Response Border Thickness" type="string" mode="static">
+        <description>
+          <![CDATA[The thickness of the border around the responses]]>
+        </description>
+        <value>1px</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="1px" text="1px"/>
+          <option value="2px" text="2px"/>
+          <option value="3px" text="3px"/>
+          <option value="4px" text="4px"/>
+          <option value="5px" text="5px"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="borderStyle" name="Response Border Style" type="string" mode="static">
+        <description>
+          <![CDATA[The style of the border around the responses]]>
+        </description>
+        <value>solid</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="solid" text="Solid"/>
+          <option value="dashed" text="Dashed"/>
+          <option value="dotted" text="Dotted"/>
+          <option value="double" text="Double"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="responseShadow" name="Response Drop Shadow" type="string" mode="static">
+        <description>
+          <![CDATA[The visibility of a dropshadow under the responses]]>
+        </description>
+        <value>none</value>
+        <options>
+          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="none" text="Off"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="showResponseHoverColour" name="Show Response Hover Colour" type="boolean" mode="static">
+        <description>
+          <![CDATA[This will change the colour of responses when hovered over]]>
+        </description>
+        <value>1</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseHoverColourPrimary" name="Response Hover Colour Primary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Primary colour of the response when hovering
+          ]]>
+        </description>
+        <value>255,255,255</value>
+      </property>
+      <property xsi:type="standardProperty" id="responseHoverColourSecondary" name="Response Hover Colour Secondary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Secondary colour of the response when hovering
+          ]]>
+        </description>
+        <value>255,255,255</value>
+      </property>
+	  <property xsi:type="standardProperty" id="showResponseHoverFontColour" name="Show Response Hover Font Colour" type="boolean" mode="static">
+        <description>
+          <![CDATA[This will change the colour of the text of responses when hovered over]]>
+        </description>
+        <value>1</value>
+      </property>
+      <property xsi:type="standardProperty" id="responseHoverFontColour" name="Response Hover Font Colour" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Font colour for responses when hovering
+          ]]>
+        </description>
+        <value>68,68,68</value>
+      </property>
+	  <property xsi:type="standardProperty" id="showResponseHoverBorder" name="Show Response Hover Border" type="boolean" mode="static">
+        <description>
+          <![CDATA[This will change the colour of the border of responses when hovered over]]>
+        </description>
+        <value>false</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseHoverBorderColour" name="Response Hover Border Colour" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Border colour for responses when hovering
+          ]]>
+        </description>
+        <value>000,000,000</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseHoverBorderThickness" name="Response Hover Border Thickness" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The thickness of the border around the responses when hovering
+	        ]]>
+        </description>
+        <value>1px</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="1px" text="1px"/>
+		  <option value="2px" text="2px"/>
+		  <option value="3px" text="3px"/>
+		  <option value="4px" text="4px"/>
+		  <option value="5px" text="5px"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="responseHoverBorderStyle" name="Response Hover Border Style" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The style of the border around the responses when hovering
+	        ]]>
+        </description>
+        <value>solid</value>
+        <options>
+		  <option value="none" text="None"/>
+          <option value="solid" text="Solid"/>
+          <option value="dashed" text="Dashed"/>
+		  <option value="dotted" text="Dotted"/>
+		  <option value="double" text="Double"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="showResponseHoverShadow" name="Show Response Hover Shadow" type="boolean" mode="static">
+        <description>
+          <![CDATA[This will change the colour of the shadow of responses when hovered over]]>
+        </description>
+        <value>false</value>
+      </property>
+	  <property xsi:type="standardProperty" id="responseHoverShadow" name="Response Hover Drop Shadow" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          The visibility of a dropshadow under the responses when hovering
+	        ]]>
+        </description>
+        <value>none</value>
+        <options>
+          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="none" text="Off"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="responseSelectedColourPrimary" name="Selected Response Colour Primary" type="color" mode="static">
+        <description>
+          <![CDATA[Primary colour of the selected item]]>
+        </description>
+        <value>0,147,234</value>
+      </property>
+      <property xsi:type="standardProperty" id="responseSelectedColourSecondary" name="Selected Response Colour Secondary" type="color" mode="static">
+        <description>
+          <![CDATA[Secondary colour of the selected item]]>
+        </description>
+        <value>0,124,196</value>
+      </property>
+      <property xsi:type="standardProperty" id="responseSelectedFontColour" name="Selected Response Font Colour" type="color" mode="static">
+        <description>
+          <![CDATA[Font colour for selected responses]]>
+        </description>
+        <value>255,255,255</value>
+      </property>
+      <property xsi:type="standardProperty" id="responseSelectedBorderColour" name="Response Border Colour" type="color" mode="static">
+        <description>
+          <![CDATA[Border colour for selected responses]]>
+        </description>
+        <value>161,167,173</value>
+      </property>
+      <property xsi:type="standardProperty" id="responseSelectedBorderThickness" name="Response Border Thickness" type="string" mode="static">
+        <description>
+          <![CDATA[The thickness of the border around the selected responses]]>
+        </description>
+        <value>1px</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="1px" text="1px"/>
+          <option value="2px" text="2px"/>
+          <option value="3px" text="3px"/>
+          <option value="4px" text="4px"/>
+          <option value="5px" text="5px"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="responseSelectedBorderStyle" name="Response Border Style" type="string" mode="static">
+        <description>
+          <![CDATA[The style of the border around the selected responses]]>
+        </description>
+        <value>solid</value>
+        <options>
+          <option value="none" text="None"/>
+          <option value="solid" text="Solid"/>
+          <option value="dashed" text="Dashed"/>
+          <option value="dotted" text="Dotted"/>
+          <option value="double" text="Double"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="responseSelectedShadow" name="Selected Response Drop Shadow" type="string" mode="static">
+        <description>
+          <![CDATA[The visibility of a dropshadow under the selected responses]]>
+        </description>
+        <value>none</value>
+        <options>
+          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="none" text="Off"/>
+        </options>
+      </property>
+	</category>
+	
+	<category id="images" name="Images">
+	  <property xsi:type="standardProperty" id="autoImageSize" name="Force image to fit" type="boolean" mode="static">
+        <description>
+          <![CDATA[
+	          If response height or width is forced then image will be resized to fit within container. If on this will override image resizeing rules
+	        ]]>
+        </description>
+        <value>false</value>
+      </property>
+      <property xsi:type="standardProperty" id="maxImageWidth" name="Max Image Width" type="number" mode="static">
+        <description>
+          <![CDATA[Set max image width]]>
+        </description>
+        <value>100</value>
+      </property>
+      <property xsi:type="standardProperty" id="maxImageHeight" name="Max Image Height" type="number" mode="static">
+        <description>
+          <![CDATA[Set max image height]]>
+        </description>
+        <value>100</value>
+      </property>
+      <property xsi:type="standardProperty" id="forceImageSize" name="Force image size" type="string" mode="static">
+        <description>
+          <![CDATA[Force height or width for all images]]>
+        </description>
+        <value>width</value>
+        <options>
+          <option value="no" text="No"/>
+          <option value="width" text="Force width"/>
+          <option value="height" text="Force height"/>
+          <option value="both" text="Force both"/>
+        </options>
+      </property>
+	</category>
+	<category id="fallback" name="Fallback">
+	  <property xsi:type="standardProperty" id="orientation" name="Orientation" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          Response block orientation
+	        ]]>
+        </description>
+        <value>vertical</value>
+		<options>
+          <option value="horizontal" text="Horizontal"/>
+          <option value="vertical" text="Vertical"/>
+        </options>
+      </property>
+	  <property xsi:type="standardProperty" id="fbImageWidth" name="Image Width" type="number" mode="static">
+        <description>
+          <![CDATA[
+	          Set image width for fallback
+			]]>
+        </description>
+        <value>100</value>
+      </property>
+	</category>
+    
+  </properties>
+</control>

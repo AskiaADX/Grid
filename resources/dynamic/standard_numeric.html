@@ -1,0 +1,104 @@
+﻿{%
+Dim inputName = CurrentQuestion.InputName()
+Dim inputValue
+Dim caption
+Dim inputId
+Dim image
+Dim attrChecked
+Dim startAreaPosition = CurrentADC.PropValue("startAreaPosition")
+Dim gridSquares = CurrentADC.PropValue("gridSquares").ToNumber()
+Dim topLabel = CurrentADC.PropValue("topLabel")
+Dim rightLabel = CurrentADC.PropValue("rightLabel")
+Dim bottomLabel = CurrentADC.PropValue("bottomLabel")
+Dim leftLabel = CurrentADC.PropValue("leftLabel")
+
+Dim arr = CurrentQuestion.ParentLoop.ParentLoop.AvailableResponses
+Dim ar = CurrentQuestion.ParentLoop.AvailableResponses
+Dim i
+Dim j
+For i = 1 To arr.Count
+    inputName = CurrentQuestion.Iteration(ar[1].Index,arr[i].Index).InputName()
+    inputId   = inputName
+    inputValue = CurrentQuestion.Iteration(ar[1].Index,arr[i].Index).InputValue()
+%}
+<input type="hidden" id="{%= inputId %}" name="{%= inputName %}" value="{%= inputValue %}"  />
+{%
+    inputName = CurrentQuestion.Iteration(ar[2].Index,arr[i].Index).InputName()
+    inputId   = inputName
+    inputValue = CurrentQuestion.Iteration(ar[2].Index,arr[i].Index).InputValue()
+%}
+<input type="hidden" id="{%= inputId %}" name="{%= inputName %}" value="{%= inputValue %}"  />
+{% Next %}
+
+<div class="startArea {%= startAreaPosition %}">
+    {%
+    For j = 1 To arr.Count 
+        inputName  = CurrentQuestion.Iteration(arr[j].Index).InputName()
+        inputId    = inputName
+        inputValue = CurrentQuestion.Iteration(arr[j].Index).InputValue()
+        caption    = arr[j].Caption
+        image	   = arr.ResourceURL[j]
+    %}
+    <div id="res{%=j-1%}" class="responseItem" data-index="{%=j-1%}">
+        {% IF CurrentADC.PropValue("responseTextPosition") = "top" or CurrentADC.PropValue("responseTextPosition") = "left" Then %}
+            <div class="response_text">{%:= caption %}</div>
+        {% EndIF %}
+        {% IF image <> "" Then %}
+            <img src="{%= image %}" />
+        {% EndIF %}
+        {% IF CurrentADC.PropValue("responseTextPosition") = "bottom" or CurrentADC.PropValue("responseTextPosition") = "right" Then %}
+            <div class="response_text">{%:= caption %}</div>
+        {% EndIF %}
+        <div style="clear:both"></div>
+    </div>
+    {% Next %}
+    <div class="clear"></div>
+</div>
+
+<div class="gridOuter">
+	
+	<div class="axisLabel top"><div class="labelTxt">{%:= topLabel %}</div></div>
+    <div class="axisLabel left"><div class="labelTxt">{%:= leftLabel %}</div></div>
+    <div class="axisLabel bottom"><div class="labelTxt">{%:= bottomLabel %}</div></div>
+    <div class="axisLabel right"><div class="labelTxt">{%:= rightLabel %}</div></div>
+	<div class="gridInner">
+    	<div class="xCounter valueIndicator top"><div class="counterTxt"></div></div>
+    	<div class="yCounter valueIndicator left"><div class="counterTxt"></div></div>
+        <div class="xCounter valueIndicator bottom"><div class="counterTxt"></div></div>
+    	<div class="yCounter valueIndicator right"><div class="counterTxt"></div></div>
+        <div class='crosshair'></div>
+        
+    {%
+    For j = 1 To arr.Count 
+        inputName  = CurrentQuestion.Iteration(arr[j].Index).InputName()
+        inputId    = inputName
+        inputValue = CurrentQuestion.Iteration(arr[j].Index).InputValue()
+        caption    = arr[j].Caption
+        image	   = arr.ResourceURL[j]
+    %}
+    <div class="resMini{%=j-1%} responseItemMini" data-index="{%=j-1%}" style="display:none;">
+        <div class="cross"></div>
+        {% IF CurrentADC.PropValue("responseTextPosition") = "top" or CurrentADC.PropValue("responseTextPosition") = "left" Then %}
+            <div class="response_text">{%:= caption %}</div>
+        {% EndIF %}
+        {% IF image <> "" Then %}
+            <img src="{%= image %}" />
+        {% EndIF %}
+        {% IF CurrentADC.PropValue("responseTextPosition") = "bottom" or CurrentADC.PropValue("responseTextPosition") = "right" Then %}
+            <div class="response_text">{%:= caption %}</div>
+        {% EndIF %}
+        <div style="clear:both"></div>
+    </div>
+    {% Next %}
+    {%
+    Dim h
+    Dim k
+    For h = 1 To gridSquares
+    	For k = 1 To gridSquares 
+    %}
+    <div class="gridCell"></div>
+    	{% Next %}
+    {% Next %}
+	</div>
+</div>
+<div class="fix"></div>
