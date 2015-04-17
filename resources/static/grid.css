@@ -64,3 +64,5 @@
 .fix { clear:both; }
 
 .crosshair { background:url(crosshairs.png) no-repeat center; display:block; width:100%; height:100%; background-size:100%; }
+
+.innerTarget { width:100%; height:100%; display:block; position:absolute; top:0px; left:0px; }

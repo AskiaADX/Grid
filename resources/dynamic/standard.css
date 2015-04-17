@@ -65,6 +65,7 @@ Dim dropAreaBorderRadius =CurrentADC.PropValue("dropAreaBorderRadius")
 Dim dropAreaShadow =CurrentADC.PropValue("dropAreaShadow")
 
 Dim maxLabelWidth =CurrentADC.PropValue("maxLabelWidth")
+Dim minLabelWidth =CurrentADC.PropValue("minLabelWidth")
 Dim maxLabelHeight =CurrentADC.PropValue("maxLabelHeight")
 Dim labelPadding =CurrentADC.PropValue("labelPadding")
 Dim labelColourPrimary =CurrentADC.PropValue("labelColourPrimary")
@@ -335,6 +336,12 @@ EndIF
 #adc_{%= CurrentADC.InstanceId%} .axisLabel.left .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.right .labelTxt {
 	{% IF maxLabelWidth <> "" THEN %}
 		max-width: {%= maxLabelWidth %};
+	{% EndIF %}
+}
+#adc_{%= CurrentADC.InstanceId%} .axisLabel.top .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.bottom .labelTxt,
+#adc_{%= CurrentADC.InstanceId%} .axisLabel.left .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.right .labelTxt { 
+	{% IF minLabelWidth <> "" THEN %}
+		min-width: {%= minLabelWidth %};
 	{% EndIF %}
 }
 

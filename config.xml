@@ -448,6 +448,24 @@
       </property>
 	</category>
 	<category id="axisLabels" name="Axis Labels">
+	  <property xsi:type="standardProperty" id="hideLabels" name="Hide Labels" type="boolean" mode="static">
+        <description>
+          <![CDATA[This will hide the axis labels]]>
+        </description>
+        <value>0</value>
+      </property>
+	  <property xsi:type="standardProperty" id="hideLabelsMobile" name="Hide Labels for Mobile" type="boolean" mode="static">
+        <description>
+          <![CDATA[This will hide the axis labels for mobiles]]>
+        </description>
+        <value>0</value>
+      </property>
+	  <property xsi:type="standardProperty" id="minLabelWidth" name="Min Label Width" type="string" mode="static">
+        <description>
+          <![CDATA[Sets the minimum width for the axis labels]]>
+        </description>
+        <value></value>
+      </property>
 	  <property xsi:type="standardProperty" id="maxLabelWidth" name="Max Label Width" type="string" mode="static">
         <description>
           <![CDATA[Sets the maximum width for the axis labels]]>
