@@ -102,9 +102,10 @@
 			row = 0,
 			x = 0,
 			y = 0,
-			cellBorderWidth = 0;
-			
-			
+			cellBorderWidth = 0,
+			responseFontSize = parseInt(options.responseFontSize) * scaleOnTarget,
+			responseFontUnits = options.responseFontSize.split(responseFontSize)[1];
+					
 		// check for mobile or reduced screen size
 		if( (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) || $(window).width() <= 400 ) {
 			// resize start area to max space
@@ -164,14 +165,21 @@
 		}
 		
 		// Fix counters
-		var $leftPos = parseInt($('.gridInner').css('border-left-width')) + $('.xCounter').width();
+		var $leftPos = parseInt($('.gridOuter').css('border-left-width')) + $('.xCounter').width();
+		
+		// IF IE8
+		if (!Modernizr.csstransforms) {
+			$leftPos += $('.xCounter').width();
+			$('.xCounter.top, .yCounter.left').css({'visibility':'hidden'});
+		}
+		
 		$('.xCounter').css({
 			'top':-$leftPos+'px',
 			'left':0+'px',
 			opacity: 0
 		});
 		$('.xCounter.bottom').css({
-			'top':$('.gridInner').outerWidth()+'px',
+			'top':$('.gridOuter').outerWidth()+'px',
 			'left':0+'px',
 			opacity: 0
 		});
@@ -184,7 +192,7 @@
 		});
 		$('.yCounter.right').css({
 			'top':0+'px',
-			'left':$('.gridInner').outerHeight()+'px',
+			'left':$('.gridOuter').outerHeight()+'px',
 			opacity: 0
 		});
 		
@@ -225,8 +233,12 @@
 				adjustmentY = (yLength - $('.yCounter').height()) / yLength,
 				$offSetLeft = $('.gridInner').offset().left,
 				$offSetTop =  $('.gridInner').offset().top,
-				$newPosX = (e.pageX - $offSetLeft) * adjustmentX,
-				$newPosY = (e.pageY - $offSetTop) * adjustmentY;
+				$newPosX = ((e.pageX - $offSetLeft) * adjustmentX) + $('.xCounter').width(),
+				$newPosY = ((e.pageY - $offSetTop) * adjustmentY) + $('.yCounter').height();
+			
+			if (!Modernizr.csstransforms) {
+
+			}
 			
 			//Counter numbers
 			var $x =  Math.round( ( (e.pageX - $offSetLeft)/xLength ) * gridSquares ),
@@ -261,13 +273,61 @@
 				items[($(ui.draggable).data('index')*2)].element.val(x);
 				items[($(ui.draggable).data('index')*2)+1].element.val(y);
 				
+				// IF IE8	
+				if (!Modernizr.csstransforms) {
+					
+					// Resize image the oldfashioned way
+					var maxItemScale = scaleOnTarget,
+						nImageWidth = Math.round($(ui.draggable).find('img').data('owidth') * scaleOnTarget) + "px",
+						nImageHeight = Math.round($(ui.draggable).find('img').data('oheight') * scaleOnTarget) + "px",
+						nImagePaddingT = Math.round(parseInt($(ui.draggable).find('img').css('padding-top')) * scaleOnTarget) + "px",
+						nImagePaddingR = Math.round(parseInt($(ui.draggable).find('img').css('padding-right')) * scaleOnTarget) + "px",
+						nImagePaddingB = Math.round(parseInt($(ui.draggable).find('img').css('padding-bottom')) * scaleOnTarget) + "px",
+						nImagePaddingL = Math.round(parseInt($(ui.draggable).find('img').css('padding-left')) * scaleOnTarget) + "px",
+						nTxtPaddingT = Math.round(parseInt($(ui.draggable).find('.responseText').css('padding-top')) * scaleOnTarget) + "px",
+						nTxtPaddingR = Math.round(parseInt($(ui.draggable).find('.responseText').css('padding-right')) * scaleOnTarget) + "px",
+						nTxtPaddingB = Math.round(parseInt($(ui.draggable).find('.responseText').css('padding-bottom')) * scaleOnTarget) + "px",
+						nTxtPaddingL = Math.round(parseInt($(ui.draggable).find('.responseText').css('padding-left')) * scaleOnTarget) + "px",
+						nWidth = Math.round(parseInt($(ui.draggable).data('oWidth')) * scaleOnTarget),
+						nheight = Math.round(parseInt($(ui.draggable).data('oHeight')) * scaleOnTarget),
+						nPaddingT = Math.round(parseInt($(ui.draggable).css('padding-top')) * scaleOnTarget) + "px",
+						nPaddingR = Math.round(parseInt($(ui.draggable).css('padding-right')) * scaleOnTarget) + "px",
+						nPaddingB = Math.round(parseInt($(ui.draggable).css('padding-bottom')) * scaleOnTarget) + "px",
+						nPaddingL = Math.round(parseInt($(ui.draggable).css('padding-left')) * scaleOnTarget) + "px",
+						nY = ($(ui.draggable).offset().top + (parseInt($(ui.draggable).data('oHeight'))*0.5)) - (nheight*0.5),
+						nX = ($(ui.draggable).offset().left + (parseInt($(ui.draggable).data('oWidth'))*0.5)) - (nWidth*0.5);
+					
+					if ( parseInt($(ui.draggable).css('width')) != nWidth ) {					
+						$(ui.draggable).find('.response_text').css({'font-size':responseFontSize});
+						$(ui.draggable).find('img').css({
+							'width':nImageWidth,
+							'height':nImageHeight,
+							'padding':nImagePaddingT + " " + nImagePaddingR + " " + nImagePaddingB + " " + nImagePaddingL
+						});
+						$(ui.draggable).find('.response_text').css({
+							'font-size':responseFontSize + responseFontUnits,
+							'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
+						}).hide();
+						$(ui.draggable).offset({top:nY,left:nX});
+						$(ui.draggable).css({
+							'width':nWidth,
+							'height':nheight,
+							'padding':nPaddingT + " " + nPaddingR + " " + nPaddingB + " " + nPaddingL
+						});
+					}
+					
+				} else { 
+				
+					$( ui.draggable ).transition({ scale: scaleOnTarget, 'z-index': 1 }, options.animationSpeed);
+				
+				}
+				
 				// Set value to card?	
-				$( ui.draggable )
-					.transition({ scale: scaleOnTarget, 'z-index': 1 }, options.animationSpeed)
-					.draggable({ 
+				$( ui.draggable ).draggable(
+					options, {
 						cursorAt: { 
-							top:(parseInt($(ui.draggable).data('oHeight'))/2), 
-							left:(parseInt($(ui.draggable).data('oWidth'))/2)
+							top:(!Modernizr.csstransforms)?($(ui.draggable).outerHeight()/2):(parseInt($(ui.draggable).data('oHeight'))/2), 
+							left:(!Modernizr.csstransforms)?($(ui.draggable).outerWidth()/2):(parseInt($(ui.draggable).data('oWidth'))/2)
 						},
 						zIndex: 9999,
 						drag: function(){
@@ -277,15 +337,11 @@
 							dragCheck = false;
 							//$(ui.draggable).off('click');
 						} 
-					});
+					}
+				);
 
 				$( ui.draggable ).attr('data-value',$(this).data('index'));
 									
-				/*$('.responseItem').each(function(index) { 
-					$(this).removeClass('responseActive');
-					//$('.dropZone').unbind('mouseup');
-				});*/
-				
 				$('.xCounter, .yCounter').transition({ opacity: 0 });
 				$('html').off("mousemove");
 				
@@ -334,22 +390,86 @@
 			items[($('.responseActive').data('index')*2)].element.val(xVal);
 			items[($('.responseActive').data('index')*2)+1].element.val(yVal);
 				
+
 				//$x = $x - (gridSquares * 0.5);
 				//$y = (gridSquares * 0.5) - $y;
-			
-			var maxItemScale = scaleOnTarget,
-				topOrigin = $('.gridInner').offset().top,
-				leftOrigin = $('.gridInner').offset().left,
-				x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
-				y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
 				
-			
+			// IF IE8	
+			if (!Modernizr.csstransforms) {
+				
+				var maxItemScale = scaleOnTarget,
+					topOrigin = $('.gridInner').offset().top,
+					leftOrigin = $('.gridInner').offset().left,
+					nImageWidth = Math.round($('.responseActive img').data('owidth') * scaleOnTarget) + "px",
+					nImageHeight = Math.round($('.responseActive img').data('oheight') * scaleOnTarget) + "px",
+					nImagePaddingT = Math.round(parseInt($('.responseActive img').css('padding-top')) * scaleOnTarget) + "px",
+					nImagePaddingR = Math.round(parseInt($('.responseActive img').css('padding-right')) * scaleOnTarget) + "px",
+					nImagePaddingB = Math.round(parseInt($('.responseActive img').css('padding-bottom')) * scaleOnTarget) + "px",
+					nImagePaddingL = Math.round(parseInt($('.responseActive img').css('padding-left')) * scaleOnTarget) + "px",
+					nTxtPaddingT = Math.round(parseInt($('.responseActive .responseText').css('padding-top')) * scaleOnTarget) + "px",
+					nTxtPaddingR = Math.round(parseInt($('.responseActive .responseText').css('padding-right')) * scaleOnTarget) + "px",
+					nTxtPaddingB = Math.round(parseInt($('.responseActive .responseText').css('padding-bottom')) * scaleOnTarget) + "px",
+					nTxtPaddingL = Math.round(parseInt($('.responseActive .responseText').css('padding-left')) * scaleOnTarget) + "px",
+					nWidth = Math.round(parseInt($('.responseActive').data('oWidth')) * scaleOnTarget),
+					nheight = Math.round(parseInt($('.responseActive').data('oHeight')) * scaleOnTarget),
+					nPaddingT = Math.round(parseInt($('.responseActive').css('padding-top')) * scaleOnTarget) + "px",
+					nPaddingR = Math.round(parseInt($('.responseActive').css('padding-right')) * scaleOnTarget) + "px",
+					nPaddingB = Math.round(parseInt($('.responseActive').css('padding-bottom')) * scaleOnTarget) + "px",
+					nPaddingL = Math.round(parseInt($('.responseActive').css('padding-left')) * scaleOnTarget) + "px",
+					x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
+					y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
+					
+				$('.responseActive').offset({top:(y),left:(x)});	
+				
+				if ( parseInt($('.responseActive').css('width')) != nWidth ) {
+					$('.responseActive .response_text').css({'font-size':responseFontSize});
+					$('.responseActive img').css({
+						'width':nImageWidth,
+						'height':nImageHeight,
+						'padding':nImagePaddingT + " " + nImagePaddingR + " " + nImagePaddingB + " " + nImagePaddingL
+					});
+					$('.responseActive .response_text').css({
+						'font-size':responseFontSize + responseFontUnits,
+						'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
+					}).hide();
+					$('.responseActive').css({
+						'width':nWidth,
+						'height':nheight,
+						'padding':nPaddingT + " " + nPaddingR + " " + nPaddingB + " " + nPaddingL
+					});
+				}
+				
+				$('.responseActive').draggable( 
+						"option", {
+							cursorAt: { 
+								top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oHeight'))/2), 
+								left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('oWidth'))/2) 
+							}
+						}
+					);
 
-			$('.responseActive').offset({top:(y - $('.responseActive').data('oHeight')*0.5),left:(x - $('.responseActive').data('oWidth')*0.5)});	
-			$('.responseActive').transition({ scale:maxItemScale }, 0,function() {
 				$('.responseActive').removeClass('responseActive');
 				clickActive = false;
-			});
+				
+				
+					
+			} else {
+				
+				var maxItemScale = scaleOnTarget,
+					topOrigin = $('.gridInner').offset().top,
+					leftOrigin = $('.gridInner').offset().left,
+					x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
+					y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+				
+				$('.responseActive').offset({top:(y - $('.responseActive').data('oHeight')*0.5),left:(x - $('.responseActive').data('oWidth')*0.5)});	
+				$('.responseActive').transition({ scale:maxItemScale }, 0,function() {
+					$('.responseActive').removeClass('responseActive');
+					clickActive = false;
+				});
+				
+			}
+
+			
 			
 			
 					
@@ -446,11 +566,69 @@
 				drop: function( event, ui ) {
 					
 					//dragging = false;
+					
+					// IF IE8
+					if (!Modernizr.csstransforms) {
+						
+						var maxItemScale = scaleOnTarget,
+							topOrigin = $('.gridInner').offset().top,
+							leftOrigin = $('.gridInner').offset().left,
+							nImageWidth = ($('.responseActive img').data('owidth') * scaleOnTarget) + "px",
+							nImageHeight = ($('.responseActive img').data('oheight') * scaleOnTarget) + "px",
+							nImagePaddingT = parseInt($('.responseActive img').css('padding-top')) * scaleOnTarget + "px",
+							nImagePaddingR = parseInt($('.responseActive img').css('padding-right')) * scaleOnTarget + "px",
+							nImagePaddingB = parseInt($('.responseActive img').css('padding-bottom')) * scaleOnTarget + "px",
+							nImagePaddingL = parseInt($('.responseActive img').css('padding-left')) * scaleOnTarget + "px",
+							nTxtPaddingT = parseInt($('.responseActive .responseText').css('padding-top')) * scaleOnTarget + "px",
+							nTxtPaddingR = parseInt($('.responseActive .responseText').css('padding-right')) * scaleOnTarget + "px",
+							nTxtPaddingB = parseInt($('.responseActive .responseText').css('padding-bottom')) * scaleOnTarget + "px",
+							nTxtPaddingL = parseInt($('.responseActive .responseText').css('padding-left')) * scaleOnTarget + "px",
+							nWidth = parseInt($('.responseActive').data('oWidth')) * scaleOnTarget,
+							nheight = parseInt($('.responseActive').data('oHeight')) * scaleOnTarget,
+							nPaddingT = parseInt($('.responseActive').css('padding-top')) * scaleOnTarget + "px",
+							nPaddingR = parseInt($('.responseActive').css('padding-right')) * scaleOnTarget + "px",
+							nPaddingB = parseInt($('.responseActive').css('padding-bottom')) * scaleOnTarget + "px",
+							nPaddingL = parseInt($('.responseActive').css('padding-left')) * scaleOnTarget + "px";	
+						
+						$(ui.draggable).find('img').css({
+							'width':$(ui.draggable).find('img').data('owidth'),
+							'height':$(ui.draggable).find('img').data('oheight'),
+							'padding':''
+						});
+						$(ui.draggable).find('.response_text').css({
+							'font-size':'',
+							'padding':''
+						}).show();
+						$(ui.draggable).css({
+							'width':'',
+							'height':'',
+							'padding':''
+						});
+						
+						$( ui.draggable ).draggable( 
+							"option", {
+								cursorAt: { 
+									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oHeight'))/2), 
+									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('oWidth'))/2) 
+								},
+								revert:'invalid'
+							}
+						);
+						/**/
+					} else {
+						
+						$( ui.draggable ).draggable( 
+							"option", {
+								revert:'invalid'
+							}
+						);
+						$( ui.draggable ).transition({ scale: 1 }, options.animationSpeed)
+						
+					}
+					/**/
 						
 					$( ui.draggable )
-						.draggable({revert:'invalid'})
 						.animate({ top:$(ui.draggable).data('top'), left:$(ui.draggable).data('left') }, options.animationSpeed)
-						.transition({ scale: 1 }, options.animationSpeed)
 						.attr('data-value','');
 	
 					// Write values				
@@ -511,8 +689,8 @@
 						revert: 'invalid', 
 						zIndex: 2700, 
 						cursorAt: { 
-							top:$(this).outerHeight()/2, 
-							left:$(this).outerWidth()/2 
+							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oHeight'))/2), 
+							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('oWidth'))/2) 
 						},
 						drag: function(){
 							dragCheck = true;
@@ -559,18 +737,82 @@
 						var $x =  Math.round( ( (e.pageX - $offSetLeft)/xLength ) * gridSquares ),
 							$y =  Math.round( ( (e.pageY - $offSetTop)/yLength ) * gridSquares );*/
 							
-							
 						
-						var maxItemScale = scaleOnTarget,
+						// IF IE8	
+						if (!Modernizr.csstransforms) {
+							
+							var maxItemScale = scaleOnTarget,
+								topOrigin = $('.gridInner').offset().top,
+								leftOrigin = $('.gridInner').offset().left,
+								nImageWidth = ($(this).find('img').data('owidth') * scaleOnTarget) + "px",
+								nImageHeight = ($(this).find('img').data('oheight') * scaleOnTarget) + "px",
+								nImagePaddingT = parseInt($(this).find('img').css('padding-top')) * scaleOnTarget + "px",
+								nImagePaddingR = parseInt($(this).find('img').css('padding-right')) * scaleOnTarget + "px",
+								nImagePaddingB = parseInt($(this).find('img').css('padding-bottom')) * scaleOnTarget + "px",
+								nImagePaddingL = parseInt($(this).find('img').css('padding-left')) * scaleOnTarget + "px",
+								nTxtPaddingT = parseInt($(this).find('.responseText').css('padding-top')) * scaleOnTarget + "px",
+								nTxtPaddingR = parseInt($(this).find('.responseText').css('padding-right')) * scaleOnTarget + "px",
+								nTxtPaddingB = parseInt($(this).find('.responseText').css('padding-bottom')) * scaleOnTarget + "px",
+								nTxtPaddingL = parseInt($(this).find('.responseText').css('padding-left')) * scaleOnTarget + "px",
+								nWidth = parseInt($(this).data('oWidth')) * scaleOnTarget,
+								nheight = parseInt($(this).data('oHeight')) * scaleOnTarget,
+								nPaddingT = parseInt($(this).css('padding-top')) * scaleOnTarget + "px",
+								nPaddingR = parseInt($(this).css('padding-right')) * scaleOnTarget + "px",
+								nPaddingB = parseInt($(this).css('padding-bottom')) * scaleOnTarget + "px",
+								nPaddingL = parseInt($(this).css('padding-left')) * scaleOnTarget + "px",
+								x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
+								y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
+								
+							$(this).offset({top:(y),left:(x)});	
+							
+							$(this).find('.response_text').css({'font-size':responseFontSize});
+							$(this).find('img').css({
+								'width':nImageWidth,
+								'height':nImageHeight,
+								'padding':nImagePaddingT + " " + nImagePaddingR + " " + nImagePaddingB + " " + nImagePaddingL
+							});
+							$(this).find('.response_text').css({
+								'font-size':responseFontSize + responseFontUnits,
+								'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
+							}).hide();
+							$(this).css({
+								'width':nWidth,
+								'height':nheight,
+								'padding':nPaddingT + " " + nPaddingR + " " + nPaddingB + " " + nPaddingL
+							});
+							
+							$(this).draggable( 
+								"option", {
+									cursorAt: { 
+										top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oHeight'))/2), 
+										left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('oWidth'))/2) 
+									},
+									revert:'invalid'
+								}
+							);
+							
+							$(this).transition({ scale:maxItemScale }, 0,function() {
+
+							});
+								
+						} else {
+							
+							var maxItemScale = scaleOnTarget,
 							topOrigin = $('.gridInner').offset().top,
 							leftOrigin = $('.gridInner').offset().left,
 							x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
 							y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
 	
-						$(this).offset({top:y,left:x});	
-						$(this).transition({ scale:maxItemScale }, options.animationSpeed,function() {
-	
-						});
+							$(this).offset({top:y,left:x});	
+							$(this).transition({ scale:maxItemScale }, options.animationSpeed,function() {
+		
+							});
+							
+						}
+							
+							
+						
+						
 						
 					/*}*/
 													
@@ -580,8 +822,8 @@
 						revert: 'invalid', 
 						zIndex: 2700, 
 						cursorAt: { 
-							top:$(this).outerHeight()/2, 
-							left:$(this).outerWidth()/2 
+							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oHeight'))/2), 
+							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('oWidth'))/2) 
 						},
 						drag: function(){
 							dragCheck = true;
@@ -597,7 +839,7 @@
 						if ( !clickActive ) {
 							$(this).addClass('responseActive');
 							clickActive = true;
-							$('.gridInner').append('<div class="innerTarget"></div>');
+							$('.gridOuter').append('<div class="innerTarget gridInner"></div>');
 							$('.innerTarget').click( function(e) {
 								setTarget(e);
 							});
@@ -698,6 +940,8 @@
 								
 				
 							}
+							
+							$(this).data({'owidth':size.width,'oheight':size.height});
 						});
 						
 						$container.css('visibility','visible');

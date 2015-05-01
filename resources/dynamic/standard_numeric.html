@@ -62,43 +62,22 @@ For i = 1 To arr.Count
     <div class="axisLabel bottom"><div class="labelTxt">{%:= bottomLabel %}</div></div>
     <div class="axisLabel right"><div class="labelTxt">{%:= rightLabel %}</div></div>
 	<div class="gridInner">
+        
+        {%
+        Dim h
+        Dim k
+        For h = 1 To gridSquares
+            For k = 1 To gridSquares 
+        %}
+        <div class="gridCell"></div>
+            {% Next %}
+        {% Next %}
+        </div>
+    
+    	<div class='crosshair'></div>
     	<div class="xCounter valueIndicator top"><div class="counterTxt"></div></div>
     	<div class="yCounter valueIndicator left"><div class="counterTxt"></div></div>
         <div class="xCounter valueIndicator bottom"><div class="counterTxt"></div></div>
     	<div class="yCounter valueIndicator right"><div class="counterTxt"></div></div>
-        <div class='crosshair'></div>
-        
-    {%
-    For j = 1 To arr.Count 
-        inputName  = CurrentQuestion.Iteration(arr[j].Index).InputName()
-        inputId    = inputName
-        inputValue = CurrentQuestion.Iteration(arr[j].Index).InputValue()
-        caption    = arr[j].Caption
-        image	   = arr.ResourceURL[j]
-    %}
-    <div class="resMini{%=j-1%} responseItemMini" data-index="{%=j-1%}" style="display:none;">
-        <div class="cross"></div>
-        {% IF CurrentADC.PropValue("responseTextPosition") = "top" or CurrentADC.PropValue("responseTextPosition") = "left" Then %}
-            <div class="response_text">{%:= caption %}</div>
-        {% EndIF %}
-        {% IF image <> "" Then %}
-            <img src="{%= image %}" />
-        {% EndIF %}
-        {% IF CurrentADC.PropValue("responseTextPosition") = "bottom" or CurrentADC.PropValue("responseTextPosition") = "right" Then %}
-            <div class="response_text">{%:= caption %}</div>
-        {% EndIF %}
-        <div style="clear:both"></div>
-    </div>
-    {% Next %}
-    {%
-    Dim h
-    Dim k
-    For h = 1 To gridSquares
-    	For k = 1 To gridSquares 
-    %}
-    <div class="gridCell"></div>
-    	{% Next %}
-    {% Next %}
-	</div>
 </div>
 <div class="fix"></div>

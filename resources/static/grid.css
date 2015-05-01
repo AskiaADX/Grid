@@ -6,12 +6,15 @@
 .gridOuter { display:block; height:342px; width:342px; background:#09F; position:relative;/*position:absolute; right:0px; top:0px;*/ }
 
 .gridInner { display:block; height:300px; width:300px; /*border:1px solid #fff;*/ position:relative; margin:20px; }
+.gridTarget { position:relative; width:100%; height:100%; }
 
-.gridCell { display:block; border:1px solid #fff; position:absolute; }
+.gridCell { display:block; border:1px solid #fff; position:absolute; pointer-events:none; }
 
 .responseItem { 
 	position:relative; z-index:1; cursor:pointer; 
 }
+
+.responseItem img { -ms-interpolation-mode: bicubic; }
 
 .response_text { display:block; text-align:center; color:#000; }
 
@@ -63,6 +66,6 @@
 
 .fix { clear:both; }
 
-.crosshair { background:url(crosshairs.png) no-repeat center; display:block; width:100%; height:100%; background-size:100%; }
+.crosshair { background:url(crosshairs.png) no-repeat center; display:block; width:100%; height:100%; background-size:100%; position:absolute; top:0px; left:0px; }
 
 .innerTarget { width:100%; height:100%; display:block; position:absolute; top:0px; left:0px; }

@@ -21,6 +21,7 @@ $(window).load(function() {
 		dropAreaContainerWidthHeight : '{%= CurrentADC.PropValue("dropAreaContainerWidthHeight") %}',
 		hideLabels : {%= (CurrentADC.PropValue("hideLabels") = "1") %},
 		hideLabelsMobile : {%= (CurrentADC.PropValue("hideLabelsMobile") = "1") %},
+		responseFontSize : '{%= CurrentADC.PropValue("fontSize") %}',
 		items : [
 			{%:= CurrentADC.GetContent("dynamic/standard_numeric.js").ToText()%}
 		]
