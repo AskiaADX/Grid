@@ -67,6 +67,7 @@
 	  <content fileName="standard.js" type="javascript" mode="dynamic" position="foot" />
 	  <content fileName="standard_numeric.js" type="javascript" mode="dynamic" position="none" />
 	  <content fileName="crosshairs.png" type="image" mode="static" position="none" />
+	  <content fileName="clear.png" type="image" mode="static" position="none" />
     </output>
 	
 	<output id="fallback">
@@ -246,7 +247,7 @@
 	  <property xsi:type="standardProperty" id="dropAreaContainerWidthHeight" name="Drop Area Container Width and height" type="number" mode="static">
         <description>
           <![CDATA[
-	          Set drop area container width
+	          Set drop area container width. If labels are included then the droparea will shrink to contain the labels within the same area.
 			]]>
         </description>
         <value>342px</value>
@@ -335,7 +336,7 @@
           <option value="0px 2px 3px 0px rgba(0,0,0,0.75)" text="On"/>
           <option value="none" text="Off"/>
         </options>
-      </property>	
+      </property>
 	</category>
 	
 	<category id="startArea" name="Start Area">

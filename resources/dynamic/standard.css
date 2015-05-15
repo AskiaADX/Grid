@@ -346,3 +346,5 @@ EndIF
 }
 
 .gridCell { border:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); }
+
+#adc_{%= CurrentADC.InstanceId%} .innerTarget { background:url({%= CurrentADC.URLTo("static/clear.png") %}); }
