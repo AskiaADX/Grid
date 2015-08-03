@@ -8,10 +8,10 @@
 .gridInner { display:block; height:300px; width:300px; /*border:1px solid #fff;*/ position:relative; margin:20px; }
 .gridTarget { position:relative; width:100%; height:100%; }
 
-.gridCell { display:block; border:1px solid #fff; position:absolute; pointer-events:none; }
+.gridCell { display:block; position:absolute; pointer-events:none; }
 
 .responseItem { 
-	position:relative; z-index:10; cursor:pointer; 
+	position:relative; z-index:1; cursor:pointer; 
 }
 
 .responseItem img { -ms-interpolation-mode: bicubic; }
@@ -66,6 +66,6 @@
 
 .fix { clear:both; }
 
-.crosshair { display:block; width:100%; height:100%; position:absolute; top:0px; left:0px; }
+.crosshair { background:url(crosshairs.png) no-repeat center; display:block; width:100%; height:100%; background-size:100%; position:absolute; top:0px; left:0px; }
 
-.innerTarget { width:100%; height:100%; display:block; position:absolute; top:0px; left:0px; z-index:200; margin:0px; }
+.innerTarget { width:100%; height:100%; display:block; position:absolute; top:0px; left:0px; }

@@ -95,7 +95,7 @@
 			items = options.items,
 			gridSquares = Number(options.gridSquares),
 			cellSize = 0,
-			dropAreaContainerWidthHeight = options.dropAreaContainerWidthHeight,
+			dropAreaContainerWidthHeight = parseInt(options.dropAreaContainerWidthHeight),
 			hideLabels = Boolean(options.hideLabels),
 			hideLabelsMobile = Boolean(options.hideLabelsMobile),
 			col = 0,
@@ -130,15 +130,11 @@
 			$('.gridOuter').width( dropAreaContainerWidthHeight )
 						   .height( dropAreaContainerWidthHeight );
 		} else {
-			$('.gridOuter').width( dropAreaContainerWidthHeight )
-						   .height( dropAreaContainerWidthHeight );
-			$('.gridOuter').width( $('.gridOuter').width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20)
-						   .height( $('.gridOuter').width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20);			   
+			$('.gridOuter').width( dropAreaContainerWidthHeight - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20)
+						   .height( dropAreaContainerWidthHeight - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20);
 		}
-		$('.gridInner').width( $('.gridOuter').height() - 40)
-					   .height( $('.gridOuter').width() - 40);
-		$('.crosshair').width($('.gridOuter').width()).height($('.gridOuter').height());
-					   
+			$('.gridInner').width( $('.gridOuter').height() - 40)
+						   .height( $('.gridOuter').width() - 40);
 		cellSize = Math.floor( $('.gridInner').width() / gridSquares );
 		
 		$('.gridCell').each(function(i,e) {
@@ -149,25 +145,28 @@
 			
 			$(this).width( cellSize ).height( cellSize ).css({'top':(y + (row*cellBorderWidth))+'px','left':(x + (col*cellBorderWidth))+'px'});
 			col++;
+			if ( row === gridSquares - 1 ) $(this).addClass('lastRow');
 			if ( col == gridSquares ) {
+				$(this).addClass('lastCol');
 				col = 0;
 				row++;
 			}
 		});
 		
 		// Position Labels 
-		
-		$('.axisLabel.top').css('top', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
-		$('.gridOuter').css('top',($('.axisLabel.top').outerHeight() + 10) + 'px');
-		$('.axisLabel.bottom').css('bottom', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
-		$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
-		
-		$('.axisLabel.right').css('right', (0 - $('.axisLabel.right').outerWidth() - 10) + 'px');
-		$('.gridOuter').css('right',($('.axisLabel.right').outerWidth() + 10) + 'px');
-		$('.axisLabel.left').css('left', (0 - $('.axisLabel.left').outerWidth() - 10) + 'px');
-		
-		$('.axisLabel.right .labelTxt').css('top', (($('.gridOuter').height()*0.5) - ($('.axisLabel.right .labelTxt').outerHeight()*0.5)) + 'px');
-		$('.axisLabel.left .labelTxt').css('top', (($('.gridOuter').height()*0.5) - ($('.axisLabel.left .labelTxt').outerHeight()*0.5)) + 'px');
+		if ( !hideLabels ) {
+			$('.axisLabel.top').css('top', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
+			$('.gridOuter').css('top',($('.axisLabel.top').outerHeight() + 10) + 'px');
+			$('.axisLabel.bottom').css('bottom', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
+			$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
+			
+			$('.axisLabel.right').css('right', (0 - $('.axisLabel.right').outerWidth() - 10) + 'px');
+			$('.gridOuter').css('right',($('.axisLabel.right').outerWidth() + 10) + 'px');
+			$('.axisLabel.left').css('left', (0 - $('.axisLabel.left').outerWidth() - 10) + 'px');
+			
+			$('.axisLabel.right .labelTxt').css('top', (($('.gridOuter').height()*0.5) - ($('.axisLabel.right .labelTxt').outerHeight()*0.5)) + 'px');
+			$('.axisLabel.left .labelTxt').css('top', (($('.gridOuter').height()*0.5) - ($('.axisLabel.left .labelTxt').outerHeight()*0.5)) + 'px');
+		}
 		
 		if ( autoStackWidth !== '' ) {
 			if ( $(this).parents('.controlContainer').width() <= parseInt(autoStackWidth) ) stackResponses = true;
@@ -206,6 +205,7 @@
 		});
 		
 		$('.xCounter').data({
+
 			'startX': parseInt($('.xCounter').css('left')),
 			'endX': $('.gridInner').width(),
 			'Y': parseInt($('.xCounter').css('top'))
@@ -276,7 +276,7 @@
 				
 				// Calculate values
 				x =  Math.round( ( x/$( ".gridInner" ).width() ) * gridSquares );
-				y =  gridSquares - Math.round( ( y/$( ".gridInner" ).height() ) * gridSquares );
+				y =  Math.round( ( y/$( ".gridInner" ).height() ) * gridSquares );
 					
 				// Write values				
 				items[($(ui.draggable).data('index')*2)].element.val(x);
@@ -375,7 +375,7 @@
 		
 		function setTarget(e/*e, target*/) {
 			
-			$('.responseActive').attr('data-value','ontarget');
+			$('.innerTarget').remove();
 			$('.responseActive').transition({ scale:1 },0);
 			
 			var startXPos = $('.gridInner').offset().left,
@@ -393,12 +393,13 @@
 			
 			//Counter numbers
 			var xVal =  Math.round( ( (e.pageX - $offSetLeft)/xLength ) * gridSquares ),
-				yVal =  gridSquares - Math.round( ( (e.pageY - $offSetTop)/yLength ) * gridSquares );
+				yVal =  Math.round( ( (e.pageY - $offSetTop)/yLength ) * gridSquares );
 			
 			// Write values				
 			items[($('.responseActive').data('index')*2)].element.val(xVal);
 			items[($('.responseActive').data('index')*2)+1].element.val(yVal);
 				
+
 				//$x = $x - (gridSquares * 0.5);
 				//$y = (gridSquares * 0.5) - $y;
 				
@@ -425,7 +426,7 @@
 					nPaddingB = Math.round(parseInt($('.responseActive').css('padding-bottom')) * scaleOnTarget) + "px",
 					nPaddingL = Math.round(parseInt($('.responseActive').css('padding-left')) * scaleOnTarget) + "px",
 					x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
-					y = (topOrigin + $('.gridInner').height()) - ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
+					y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
 					
 				$('.responseActive').offset({top:(y),left:(x)});	
 				
@@ -466,10 +467,9 @@
 				var maxItemScale = scaleOnTarget,
 					topOrigin = $('.gridInner').offset().top,
 					leftOrigin = $('.gridInner').offset().left,
-					x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) /*- ($('.responseActive').outerWidth()*0.5)*/,
-					y = (topOrigin + $('.gridInner').outerHeight()) - (((yVal)/gridSquares) * $('.gridInner').outerHeight()) /*- ($('.responseActive').outerHeight()*0.5)*/;
-					
-				//$('.responseActive').offset({top:topOrigin,left:leftOrigin - x});	
+					x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
+					y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+				
 				$('.responseActive').offset({top:(y - $('.responseActive').data('oHeight')*0.5),left:(x - $('.responseActive').data('oWidth')*0.5)});	
 				$('.responseActive').transition({ scale:maxItemScale }, 0,function() {
 					$('.responseActive').removeClass('responseActive');
@@ -478,18 +478,7 @@
 				
 			}
 
-			// Select next reponse
-			if ( selectNextResponse ) {
-				if ( $(".responseItem[data-value='']").length > 0 ) {
-					$(".responseItem[data-value='']").eq(0).addClass('responseActive');
-					clickActive = true;
-					$('.gridOuter').prepend('<div class="innerTarget gridInner"></div>');
-					$('.gridOuter .innerTarget').click( function(e) {
-						$('.innerTarget').remove();
-						setTarget(e);
-					});
-				}
-			}
+			
 			
 			
 					
@@ -781,7 +770,7 @@
 								nPaddingB = parseInt($(this).css('padding-bottom')) * scaleOnTarget + "px",
 								nPaddingL = parseInt($(this).css('padding-left')) * scaleOnTarget + "px",
 								x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
-								y = (topOrigin + $('.gridInner').height()) - ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
+								y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
 								
 							$(this).offset({top:(y),left:(x)});	
 							
@@ -821,7 +810,7 @@
 							topOrigin = $('.gridInner').offset().top,
 							leftOrigin = $('.gridInner').offset().left,
 							x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
-							y = (topOrigin + $('.gridInner').height()) - ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+							y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
 	
 							$(this).offset({top:y,left:x});	
 							$(this).transition({ scale:maxItemScale }, options.animationSpeed,function() {
@@ -859,32 +848,19 @@
 						if ( !clickActive ) {
 							$(this).addClass('responseActive');
 							clickActive = true;
-							$('.gridOuter').prepend('<div class="innerTarget gridInner"></div>');
-							$('.gridOuter .innerTarget').click( function(e) {
-								$('.innerTarget').remove();
+							$('.gridOuter').append('<div class="innerTarget gridInner"></div>');
+							$('.innerTarget').click( function(e) {
 								setTarget(e);
 							});
 						}
 					});
 				}
 				
-				//$(this).css('z-index',initZindex);
+				$(this).css('z-index',initZindex);
 				
 			});
 			
-			// Select next reponse /**/
-			if ( selectNextResponse ) {
-				if ( $(".responseItem[data-value='']").length > 0 ) {
-					$(".responseItem[data-value='']").eq(0).addClass('responseActive');
-					clickActive = true;
-					clickActive = true;
-					$('.gridOuter').prepend('<div class="innerTarget gridInner"></div>');
-					$('.gridOuter .innerTarget').click( function(e) {
-						$('.innerTarget').remove();
-						setTarget(e);
-					});
-				}
-			}
+			
 			
 		}
 		

@@ -46,6 +46,7 @@ Dim fontSize =CurrentADC.PropValue("fontSize")
 Dim responseHeight =CurrentADC.PropValue("responseHeight")
 Dim responseWidth =CurrentADC.PropValue("responseWidth")
 
+Dim startAreaPosition =CurrentADC.PropValue("startAreaPosition")
 Dim startAreaWidth =CurrentADC.PropValue("startAreaWidth")
 Dim startAreaColourPrimary =CurrentADC.PropValue("startAreaColourPrimary")
 Dim startAreaColourSecondary =CurrentADC.PropValue("startAreaColourSecondary")
@@ -79,8 +80,6 @@ Dim labelShadow =CurrentADC.PropValue("labelShadow")
 Dim gridSquareBorderColour =CurrentADC.PropValue("gridSquareBorderColour")
 Dim gridSquareBorderThickness =CurrentADC.PropValue("gridSquareBorderThickness")
 Dim gridSquareBorderStyle =CurrentADC.PropValue("gridSquareBorderStyle")
-
-Dim startAreaPosition =CurrentADC.PropValue("startAreaPosition")
 
 Dim controlAlign =CurrentADC.PropValue("controlAlign")
 
@@ -227,10 +226,12 @@ EndIF
 	-khtml-border-radius:	{%= startAreaBorderRadius%}; 
 	border-radius:			{%= startAreaBorderRadius%};
 	
-	{% IF startAreaPosition = "top" or startAreaPosition = "left" Then %}
+	{% IF startAreaPosition = "left" Then %}
 		float:left;
-	{% ELSE %}
+	{% ELSEIF startAreaPosition = "right" Then %}
 		float:right;
+	{% ELSE %}
+		float:none;
 	{% EndIF %}
 }
 
@@ -267,10 +268,12 @@ EndIF
 	-khtml-border-radius:	{%= dropAreaBorderRadius%}; 
 	border-radius:			{%= dropAreaBorderRadius%};
 	
-	{% IF startAreaPosition = "top" or startAreaPosition = "left" Then %}
+	{% IF startAreaPosition = "left" Then %}
 		float:right;
-	{% ELSE %}
+	{% ELSEIF startAreaPosition = "right" Then %}
 		float:left;
+	{% ELSE %}
+		float:none;
 	{% EndIF %}
 }
 
@@ -345,6 +348,13 @@ EndIF
 	{% EndIF %}
 }
 
-.gridCell { border:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); }
-
-#adc_{%= CurrentADC.InstanceId%} .innerTarget { background:url({%= CurrentADC.URLTo("static/clear.png") %}); }
+.gridCell {
+	border-left:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+	border-top:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+}
+.gridCell.lastRow { 
+	border-bottom:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+}
+.gridCell.lastCol {
+	border-right:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+}

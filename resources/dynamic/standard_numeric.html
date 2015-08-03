@@ -30,6 +30,7 @@ For i = 1 To arr.Count
 <input type="hidden" id="{%= inputId %}" name="{%= inputName %}" value="{%= inputValue %}"  />
 {% Next %}
 
+{% IF startAreaPosition = "top" or startAreaPosition = "left" or startAreaPosition = "right" Then %}
 <div class="startArea {%= startAreaPosition %}">
     {%
     For j = 1 To arr.Count 
@@ -54,7 +55,7 @@ For i = 1 To arr.Count
     {% Next %}
     <div class="clear"></div>
 </div>
-
+{% EndIF %}
 <div class="gridOuter">
 	
 	<div class="axisLabel top"><div class="labelTxt">{%:= topLabel %}</div></div>
@@ -74,10 +75,36 @@ For i = 1 To arr.Count
         {% Next %}
         </div>
     
-    	<img class="crosshair" src="{%= CurrentADC.URLTo("static/crosshairs.png") %}" />
+    	<div class='crosshair'></div>
     	<div class="xCounter valueIndicator top"><div class="counterTxt"></div></div>
     	<div class="yCounter valueIndicator left"><div class="counterTxt"></div></div>
         <div class="xCounter valueIndicator bottom"><div class="counterTxt"></div></div>
     	<div class="yCounter valueIndicator right"><div class="counterTxt"></div></div>
 </div>
+{% IF startAreaPosition = "bottom" Then %}
+<div class="startArea {%= startAreaPosition %}">
+    {%
+    For j = 1 To arr.Count 
+        inputName  = CurrentQuestion.Iteration(arr[j].Index).InputName()
+        inputId    = inputName
+        inputValue = CurrentQuestion.Iteration(arr[j].Index).InputValue()
+        caption    = arr[j].Caption
+        image	   = arr.ResourceURL[j]
+    %}
+    <div id="res{%=j-1%}" class="responseItem" data-index="{%=j-1%}">
+        {% IF CurrentADC.PropValue("responseTextPosition") = "top" or CurrentADC.PropValue("responseTextPosition") = "left" Then %}
+            <div class="response_text">{%:= caption %}</div>
+        {% EndIF %}
+        {% IF image <> "" Then %}
+            <img src="{%= image %}" />
+        {% EndIF %}
+        {% IF CurrentADC.PropValue("responseTextPosition") = "bottom" or CurrentADC.PropValue("responseTextPosition") = "right" Then %}
+            <div class="response_text">{%:= caption %}</div>
+        {% EndIF %}
+        <div style="clear:both"></div>
+    </div>
+    {% Next %}
+    <div class="clear"></div>
+</div>
 <div class="fix"></div>
+{% EndIF %}
