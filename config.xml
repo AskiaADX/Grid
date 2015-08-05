@@ -361,6 +361,19 @@
         </description>
         <value>50%</value>
       </property>
+	  <property xsi:type="standardProperty" id="startAreaResponseAlignment" name="Start Area Response Alignment" type="string" mode="static">
+        <description>
+          <![CDATA[
+	          Set start area response alignment
+			]]>
+        </description>
+        <value>left</value>
+        <options>
+          <option value="left" text="Left"/>
+		  <option value="right" text="Right"/>
+          <option value="center" text="Center"/>
+        </options>
+      </property>
 	  <property xsi:type="standardProperty" id="startAreaColourPrimary" name="Start Area Colour Primary" type="color" mode="static">
         <description>
           <![CDATA[

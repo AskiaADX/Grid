@@ -48,6 +48,7 @@ Dim responseWidth =CurrentADC.PropValue("responseWidth")
 
 Dim startAreaPosition =CurrentADC.PropValue("startAreaPosition")
 Dim startAreaWidth =CurrentADC.PropValue("startAreaWidth")
+Dim startAreaResponseAlign =CurrentADC.PropValue("startAreaResponseAlignment")
 Dim startAreaColourPrimary =CurrentADC.PropValue("startAreaColourPrimary")
 Dim startAreaColourSecondary =CurrentADC.PropValue("startAreaColourSecondary")
 Dim startAreaBorderColour =CurrentADC.PropValue("startAreaBorderColour")
@@ -132,9 +133,18 @@ EndIF
 	width: {%= responseWidth%};
 	
 	padding: {%= responsePadding%};
-	margin: {%= responseMargin%};
+	{% IF startAreaResponseAlign = "center" Then %}
+		float:none;
+		margin:0px auto;
+	{% ElseIf startAreaResponseAlign = "left" Then %}
+		margin: {%= responseMargin%};
+		float:left;
+	{% Else %}
+		margin: {%= responseMargin%};
+		float:right;
+	{% EndIF %}
 	
-	float:left;
+	
 	z-index: 100;
 }
 

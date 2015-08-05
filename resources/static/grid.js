@@ -95,7 +95,7 @@
 			items = options.items,
 			gridSquares = Number(options.gridSquares),
 			cellSize = 0,
-			dropAreaContainerWidthHeight = parseInt(options.dropAreaContainerWidthHeight),
+			dropAreaContainerWidthHeight = options.dropAreaContainerWidthHeight,
 			hideLabels = Boolean(options.hideLabels),
 			hideLabelsMobile = Boolean(options.hideLabelsMobile),
 			col = 0,
@@ -113,18 +113,24 @@
 			stackResponses = true;
 			$(this).css({'width':'100%'});
 			if ( hideLabelsMobile || hideLabels ) $('.axisLabel').hide();
+			$('.gridOuter, .gridInner, .startArea').css({'width':'100%'}).width('100%');
 			$('.gridOuter').width( $(this).width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20)
 						   .height( $(this).width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20);
 			$('.gridInner').width( $('.gridOuter').height() - 40)
 						   .height( $('.gridOuter').width() - 40);
 			$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
 			$('.axisLabel.left, .axisLabel.right').height( $('.gridOuter').height() );
-			$('.gridOuter').css('marginBottom', $('.axisLabel.top').height() + $('.axisLabel.bottom').height() + 40 + 'px');
+			$('.gridOuter').css({'marginBottom': $('.axisLabel.top').height() + $('.axisLabel.bottom').height() + 40 + 'px','width':'100%'});
+			dropAreaContainerWidthHeight = $('.gridOuter').width();
 			$('.startArea').width('100%').css({'marginBottom':'20px','text-align':'center'});
 			$('.responseItem').css({'marginLeft':'auto','marginRight':'auto','float':'none'});
 			scaleOnTarget = 0.2;
-
+			
 		}
+		// fix dropAreaContainerWidthHeight if it's a percentage
+		$('.gridOuter').width( dropAreaContainerWidthHeight );
+		dropAreaContainerWidthHeight = $('.gridOuter').width();
+		
 		if ( hideLabels ) {
 			$('.axisLabel').hide();
 			$('.gridOuter').width( dropAreaContainerWidthHeight )
@@ -133,8 +139,8 @@
 			$('.gridOuter').width( dropAreaContainerWidthHeight - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20)
 						   .height( dropAreaContainerWidthHeight - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20);
 		}
-			$('.gridInner').width( $('.gridOuter').height() - 40)
-						   .height( $('.gridOuter').width() - 40);
+		$('.gridInner').width( $('.gridOuter').height() - 40)
+					   .height( $('.gridOuter').width() - 40);
 		cellSize = Math.floor( $('.gridInner').width() / gridSquares );
 		
 		$('.gridCell').each(function(i,e) {
@@ -191,6 +197,7 @@
 			'left':0+'px',
 			opacity: 0
 		});
+
 		
 		var $topPos = parseInt($('.gridInner').css('border-top-width')) + $('.yCounter').height();
 		$('.yCounter').css({
@@ -297,14 +304,14 @@
 						nTxtPaddingR = Math.round(parseInt($(ui.draggable).find('.responseText').css('padding-right')) * scaleOnTarget) + "px",
 						nTxtPaddingB = Math.round(parseInt($(ui.draggable).find('.responseText').css('padding-bottom')) * scaleOnTarget) + "px",
 						nTxtPaddingL = Math.round(parseInt($(ui.draggable).find('.responseText').css('padding-left')) * scaleOnTarget) + "px",
-						nWidth = Math.round(parseInt($(ui.draggable).data('oWidth')) * scaleOnTarget),
-						nheight = Math.round(parseInt($(ui.draggable).data('oHeight')) * scaleOnTarget),
+						nWidth = Math.round(parseInt($(ui.draggable).data('owidth')) * scaleOnTarget),
+						nheight = Math.round(parseInt($(ui.draggable).data('oheight')) * scaleOnTarget),
 						nPaddingT = Math.round(parseInt($(ui.draggable).css('padding-top')) * scaleOnTarget) + "px",
 						nPaddingR = Math.round(parseInt($(ui.draggable).css('padding-right')) * scaleOnTarget) + "px",
 						nPaddingB = Math.round(parseInt($(ui.draggable).css('padding-bottom')) * scaleOnTarget) + "px",
 						nPaddingL = Math.round(parseInt($(ui.draggable).css('padding-left')) * scaleOnTarget) + "px",
-						nY = ($(ui.draggable).offset().top + (parseInt($(ui.draggable).data('oHeight'))*0.5)) - (nheight*0.5),
-						nX = ($(ui.draggable).offset().left + (parseInt($(ui.draggable).data('oWidth'))*0.5)) - (nWidth*0.5);
+						nY = ($(ui.draggable).offset().top + (parseInt($(ui.draggable).data('oheight'))*0.5)) - (nheight*0.5),
+						nX = ($(ui.draggable).offset().left + (parseInt($(ui.draggable).data('owidth'))*0.5)) - (nWidth*0.5);
 					
 					if ( parseInt($(ui.draggable).css('width')) != nWidth ) {					
 						$(ui.draggable).find('.response_text').css({'font-size':responseFontSize});
@@ -335,8 +342,8 @@
 				$( ui.draggable ).draggable(
 					options, {
 						cursorAt: { 
-							top:(!Modernizr.csstransforms)?($(ui.draggable).outerHeight()/2):(parseInt($(ui.draggable).data('oHeight'))/2), 
-							left:(!Modernizr.csstransforms)?($(ui.draggable).outerWidth()/2):(parseInt($(ui.draggable).data('oWidth'))/2)
+							top:(!Modernizr.csstransforms)?($(ui.draggable).outerHeight()/2):(parseInt($(ui.draggable).data('oheight'))/2), 
+							left:(!Modernizr.csstransforms)?($(ui.draggable).outerWidth()/2):(parseInt($(ui.draggable).data('owidth'))/2)
 						},
 						zIndex: 9999,
 						drag: function(){
@@ -349,10 +356,15 @@
 					}
 				);
 
-				$( ui.draggable ).attr('data-value',$(this).data('index'));
+				$( ui.draggable ).attr({'data-value':$(this).data('index'),'data-ontarget':'true'});
 									
 				$('.xCounter, .yCounter').transition({ opacity: 0 });
 				$('html').off("mousemove");
+				
+				if ( stackResponses ) {
+					$('.responseItem[data-ontarget=false]').hide();
+					$('.responseItem[data-ontarget=false]').first().show();
+				}
 				
 			},
 			over: function( event, ui ) {
@@ -374,111 +386,138 @@
 		});
 		
 		function setTarget(e/*e, target*/) {
-			
-			$('.innerTarget').remove();
-			$('.responseActive').transition({ scale:1 },0);
-			
-			var startXPos = $('.gridInner').offset().left,
-				endXPos   = $('.gridInner').outerWidth(),
-				xLength   = endXPos,
-				startYPos = $('.gridInner').offset().top,
-				endYPos   = $('.gridInner').outerHeight(),
-				yLength   = endYPos,
-				//adjustmentX = (xLength - $('.xCounter').width()) / xLength,
-				//adjustmentY = (yLength - $('.yCounter').height()) / yLength,
-				$offSetLeft = $('.gridInner').offset().left,
-				$offSetTop =  $('.gridInner').offset().top;
-				//$newPosX = (e.pageX - $offSetLeft) * adjustmentX,
-				//$newPosY = (e.pageY - $offSetTop) * adjustmentY;
-			
-			//Counter numbers
-			var xVal =  Math.round( ( (e.pageX - $offSetLeft)/xLength ) * gridSquares ),
-				yVal =  Math.round( ( (e.pageY - $offSetTop)/yLength ) * gridSquares );
-			
-			// Write values				
-			items[($('.responseActive').data('index')*2)].element.val(xVal);
-			items[($('.responseActive').data('index')*2)+1].element.val(yVal);
+						
+			if ( $(e.target).hasClass('startArea') ) {
 				
+				$('.innerTarget').remove();
+				
+				if ( $('.responseActive').data('index') != null ) {
+					$('.responseActive').attr({'data-value':'','data-ontarget':'false'});
+					$('.responseActive').transition({ scale: 1, top:$('.responseActive').data('top'), left:$('.responseActive').data('left') }, options.animationSpeed);
+					// Write values				
 
-				//$x = $x - (gridSquares * 0.5);
-				//$y = (gridSquares * 0.5) - $y;
-				
-			// IF IE8	
-			if (!Modernizr.csstransforms) {
-				
-				var maxItemScale = scaleOnTarget,
-					topOrigin = $('.gridInner').offset().top,
-					leftOrigin = $('.gridInner').offset().left,
-					nImageWidth = Math.round($('.responseActive img').data('owidth') * scaleOnTarget) + "px",
-					nImageHeight = Math.round($('.responseActive img').data('oheight') * scaleOnTarget) + "px",
-					nImagePaddingT = Math.round(parseInt($('.responseActive img').css('padding-top')) * scaleOnTarget) + "px",
-					nImagePaddingR = Math.round(parseInt($('.responseActive img').css('padding-right')) * scaleOnTarget) + "px",
-					nImagePaddingB = Math.round(parseInt($('.responseActive img').css('padding-bottom')) * scaleOnTarget) + "px",
-					nImagePaddingL = Math.round(parseInt($('.responseActive img').css('padding-left')) * scaleOnTarget) + "px",
-					nTxtPaddingT = Math.round(parseInt($('.responseActive .responseText').css('padding-top')) * scaleOnTarget) + "px",
-					nTxtPaddingR = Math.round(parseInt($('.responseActive .responseText').css('padding-right')) * scaleOnTarget) + "px",
-					nTxtPaddingB = Math.round(parseInt($('.responseActive .responseText').css('padding-bottom')) * scaleOnTarget) + "px",
-					nTxtPaddingL = Math.round(parseInt($('.responseActive .responseText').css('padding-left')) * scaleOnTarget) + "px",
-					nWidth = Math.round(parseInt($('.responseActive').data('oWidth')) * scaleOnTarget),
-					nheight = Math.round(parseInt($('.responseActive').data('oHeight')) * scaleOnTarget),
-					nPaddingT = Math.round(parseInt($('.responseActive').css('padding-top')) * scaleOnTarget) + "px",
-					nPaddingR = Math.round(parseInt($('.responseActive').css('padding-right')) * scaleOnTarget) + "px",
-					nPaddingB = Math.round(parseInt($('.responseActive').css('padding-bottom')) * scaleOnTarget) + "px",
-					nPaddingL = Math.round(parseInt($('.responseActive').css('padding-left')) * scaleOnTarget) + "px",
-					x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
-					y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
-					
-				$('.responseActive').offset({top:(y),left:(x)});	
-				
-				if ( parseInt($('.responseActive').css('width')) != nWidth ) {
-					$('.responseActive .response_text').css({'font-size':responseFontSize});
-					$('.responseActive img').css({
-						'width':nImageWidth,
-						'height':nImageHeight,
-						'padding':nImagePaddingT + " " + nImagePaddingR + " " + nImagePaddingB + " " + nImagePaddingL
-					});
-					$('.responseActive .response_text').css({
-						'font-size':responseFontSize + responseFontUnits,
-						'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
-					}).hide();
-					$('.responseActive').css({
-						'width':nWidth,
-						'height':nheight,
-						'padding':nPaddingT + " " + nPaddingR + " " + nPaddingB + " " + nPaddingL
-					});
-				}
-				
-				$('.responseActive').draggable( 
-						"option", {
-							cursorAt: { 
-								top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oHeight'))/2), 
-								left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('oWidth'))/2) 
-							}
-						}
-					);
 
-				$('.responseActive').removeClass('responseActive');
-				clickActive = false;
-				
-				
+					items[($('.responseActive').data('index')*2)].element.val('');
+					items[($('.responseActive').data('index')*2)+1].element.val('');
 					
-			} else {
-				
-				var maxItemScale = scaleOnTarget,
-					topOrigin = $('.gridInner').offset().top,
-					leftOrigin = $('.gridInner').offset().left,
-					x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
-					y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
-				
-				$('.responseActive').offset({top:(y - $('.responseActive').data('oHeight')*0.5),left:(x - $('.responseActive').data('oWidth')*0.5)});	
-				$('.responseActive').transition({ scale:maxItemScale }, 0,function() {
 					$('.responseActive').removeClass('responseActive');
 					clickActive = false;
-				});
+					$('.startArea').off('click');
+				}
 				
-			}
+			} else  if ( $(e.delegateTarget).hasClass('innerTarget') ) {
+				
+				$('.responseActive').attr({'data-ontarget':'true'});
+				
+				$('.innerTarget').remove();
+				$('.startArea').off('click');
+				
+				$('.responseActive').transition({ scale:1 },0);
+				
+				var startXPos = $('.gridInner').offset().left,
+					endXPos   = $('.gridInner').outerWidth(),
+					xLength   = endXPos,
+					startYPos = $('.gridInner').offset().top,
+					endYPos   = $('.gridInner').outerHeight(),
+					yLength   = endYPos,
+					//adjustmentX = (xLength - $('.xCounter').width()) / xLength,
+					//adjustmentY = (yLength - $('.yCounter').height()) / yLength,
+					$offSetLeft = $('.gridInner').offset().left,
+					$offSetTop =  $('.gridInner').offset().top;
+					//$newPosX = (e.pageX - $offSetLeft) * adjustmentX,
+					//$newPosY = (e.pageY - $offSetTop) * adjustmentY;
+				
+				//Counter numbers
+				var xVal =  Math.round( ( (e.pageX - $offSetLeft)/xLength ) * gridSquares ),
+					yVal =  Math.round( ( (e.pageY - $offSetTop)/yLength ) * gridSquares );
+				
+				// Write values				
+				items[($('.responseActive').data('index')*2)].element.val(xVal);
+				items[($('.responseActive').data('index')*2)+1].element.val(yVal);
+					
+	
+					//$x = $x - (gridSquares * 0.5);
+					//$y = (gridSquares * 0.5) - $y;
+					
+				// IF IE8	
+				if (!Modernizr.csstransforms) {
+					
+					var maxItemScale = scaleOnTarget,
+						topOrigin = $('.gridInner').offset().top,
+						leftOrigin = $('.gridInner').offset().left,
+						nImageWidth = Math.round($('.responseActive img').data('owidth') * scaleOnTarget) + "px",
+						nImageHeight = Math.round($('.responseActive img').data('oheight') * scaleOnTarget) + "px",
+						nImagePaddingT = Math.round(parseInt($('.responseActive img').css('padding-top')) * scaleOnTarget) + "px",
+						nImagePaddingR = Math.round(parseInt($('.responseActive img').css('padding-right')) * scaleOnTarget) + "px",
+						nImagePaddingB = Math.round(parseInt($('.responseActive img').css('padding-bottom')) * scaleOnTarget) + "px",
+						nImagePaddingL = Math.round(parseInt($('.responseActive img').css('padding-left')) * scaleOnTarget) + "px",
+						nTxtPaddingT = Math.round(parseInt($('.responseActive .responseText').css('padding-top')) * scaleOnTarget) + "px",
+						nTxtPaddingR = Math.round(parseInt($('.responseActive .responseText').css('padding-right')) * scaleOnTarget) + "px",
+						nTxtPaddingB = Math.round(parseInt($('.responseActive .responseText').css('padding-bottom')) * scaleOnTarget) + "px",
+						nTxtPaddingL = Math.round(parseInt($('.responseActive .responseText').css('padding-left')) * scaleOnTarget) + "px",
+						nWidth = Math.round(parseInt($('.responseActive').data('owidth')) * scaleOnTarget),
+						nheight = Math.round(parseInt($('.responseActive').data('oheight')) * scaleOnTarget),
+						nPaddingT = Math.round(parseInt($('.responseActive').css('padding-top')) * scaleOnTarget) + "px",
+						nPaddingR = Math.round(parseInt($('.responseActive').css('padding-right')) * scaleOnTarget) + "px",
+						nPaddingB = Math.round(parseInt($('.responseActive').css('padding-bottom')) * scaleOnTarget) + "px",
+						nPaddingL = Math.round(parseInt($('.responseActive').css('padding-left')) * scaleOnTarget) + "px",
+						x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
+						y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
+						
+					$('.responseActive').offset({top:(y),left:(x)});	
+					
+					if ( parseInt($('.responseActive').css('width')) != nWidth ) {
+						$('.responseActive .response_text').css({'font-size':responseFontSize});
+						$('.responseActive img').css({
+							'width':nImageWidth,
+							'height':nImageHeight,
+							'padding':nImagePaddingT + " " + nImagePaddingR + " " + nImagePaddingB + " " + nImagePaddingL
+						});
+						$('.responseActive .response_text').css({
+							'font-size':responseFontSize + responseFontUnits,
+							'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
+						}).hide();
+						$('.responseActive').css({
+							'width':nWidth,
+							'height':nheight,
+							'padding':nPaddingT + " " + nPaddingR + " " + nPaddingB + " " + nPaddingL
+						});
+					}
+					
+					$('.responseActive').draggable( 
+							"option", {
+								cursorAt: { 
+									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oheight'))/2), 
+									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('owidth'))/2) 
+								}
+							}
+						);
+	
+					$('.responseActive').removeClass('responseActive');
+					clickActive = false;
+										
+				} else {
+					
+					var maxItemScale = scaleOnTarget,
+						topOrigin = $('.gridInner').offset().top,
+						leftOrigin = $('.gridInner').offset().left,
+						x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
+						y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+					
+					$('.responseActive').offset({top:(y - $('.responseActive').data('oheight')*0.5),left:(x - $('.responseActive').data('owidth')*0.5)});	
+					$('.responseActive').transition({ scale:maxItemScale }, 0,function() {
+						$('.responseActive').removeClass('responseActive');
+						clickActive = false;
+					});
+					
+				}
 
+			}
 			
+			if ( stackResponses ) {
+				$('.responseItem[data-ontarget=false]').hide();
+				$('.responseItem[data-ontarget=false]').first().show();
+			}
 			
 			
 					
@@ -486,7 +525,7 @@
 				if ( target === 'start' ) {
 					
 					if ( $(clickActive).data('index') != null ) {
-						$(clickActive).data({'onTarget':false}).attr({'data-value':''});
+						$(clickActive).data({'ontarget':false}).attr({'data-value':''});
 						$(clickActive).transition({ scale: 1, top:$(clickActive).data('top'), left:$(clickActive).data('left') }, options.animationSpeed);
 						$('#' + iterations[$(clickActive).data('index')].id).val('');
 					}
@@ -508,14 +547,14 @@
 					// check if it already contains an item
 					if ( !(areaExclusive && $(".responseItem[data-value='" + containerID + "']").size() > 0) ) {
 						
-						if ( $(clickActive).data('onTarget') ) { // if already on target
+						if ( $(clickActive).data('ontarget') ) { // if already on target
 							
 							var val = target,
 								maxItemScale = options.scaleOnTarget,
 								x = $( "#drop"+val ).position().left - $(clickActive).outerWidth(true)*0.5 + ($( "#drop"+val ).outerWidth()*0.5),
 								y = $( "#drop"+val ).position().top - $(clickActive).outerHeight(true)*0.5 + ($( "#drop"+val ).outerHeight()*0.5);
 										
-							$(clickActive).data({'onTarget':true}).attr({'data-value':val});
+							$(clickActive).data({'ontarget':true}).attr({'data-value':val});
 							$(clickActive).transition({top:y, left:x }, options.animationSpeed,function() {
 								sortItems(parseInt(val));
 							})
@@ -542,7 +581,7 @@
 									x = $( "#drop"+val ).position().left - $(clickActive).outerWidth(true)*0.5 + ($( "#drop"+val ).outerWidth()*0.5),
 									y = $( "#drop"+val ).position().top - $(clickActive).outerHeight(true)*0.5 + ($( "#drop"+val ).outerHeight()*0.5);
 											
-								$(clickActive).data({'onTarget':true}).attr({'data-value':val});
+								$(clickActive).data({'ontarget':true}).attr({'data-value':val});
 								$(clickActive).transition({ top:y, left:x }, options.animationSpeed,function() {
 									sortItems(parseInt(val));
 								})
@@ -580,6 +619,7 @@
 					if (!Modernizr.csstransforms) {
 						
 						var maxItemScale = scaleOnTarget,
+
 							topOrigin = $('.gridInner').offset().top,
 							leftOrigin = $('.gridInner').offset().left,
 							nImageWidth = ($('.responseActive img').data('owidth') * scaleOnTarget) + "px",
@@ -592,8 +632,8 @@
 							nTxtPaddingR = parseInt($('.responseActive .responseText').css('padding-right')) * scaleOnTarget + "px",
 							nTxtPaddingB = parseInt($('.responseActive .responseText').css('padding-bottom')) * scaleOnTarget + "px",
 							nTxtPaddingL = parseInt($('.responseActive .responseText').css('padding-left')) * scaleOnTarget + "px",
-							nWidth = parseInt($('.responseActive').data('oWidth')) * scaleOnTarget,
-							nheight = parseInt($('.responseActive').data('oHeight')) * scaleOnTarget,
+							nWidth = parseInt($('.responseActive').data('owidth')) * scaleOnTarget,
+							nheight = parseInt($('.responseActive').data('oheight')) * scaleOnTarget,
 							nPaddingT = parseInt($('.responseActive').css('padding-top')) * scaleOnTarget + "px",
 							nPaddingR = parseInt($('.responseActive').css('padding-right')) * scaleOnTarget + "px",
 							nPaddingB = parseInt($('.responseActive').css('padding-bottom')) * scaleOnTarget + "px",
@@ -617,8 +657,8 @@
 						$( ui.draggable ).draggable( 
 							"option", {
 								cursorAt: { 
-									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oHeight'))/2), 
-									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('oWidth'))/2) 
+									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oheight'))/2), 
+									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('owidth'))/2) 
 								},
 								revert:'invalid'
 							}
@@ -638,11 +678,16 @@
 						
 					$( ui.draggable )
 						.animate({ top:$(ui.draggable).data('top'), left:$(ui.draggable).data('left') }, options.animationSpeed)
-						.attr('data-value','');
+						.attr({'data-value':'','data-ontarget':'false'});
 	
 					// Write values				
 					items[($(ui.draggable).data('index')*2)].element.val('');
 					items[($(ui.draggable).data('index')*2)+1].element.val('');
+					
+					if ( stackResponses ) {
+						$('.responseItem[data-ontarget=false]').hide();
+						$('.responseItem[data-ontarget=false]').first().show();
+					}
 						
 				}
 			}).height( $('.startArea').outerHeight() );
@@ -670,6 +715,15 @@
 				}).get());
 				$('.startArea').height( maxHeight );
 				
+				// Make all responses same height
+				var elementHeights = $('.responseItem').map(function() {
+					return $(this).height();
+				}).get();
+	
+				var maxHeight = Math.max.apply(null, elementHeights);
+				
+				$('.responseItem').height(maxHeight);
+				
 			}
 			
 			// Activate items
@@ -685,11 +739,10 @@
 				$(this).data({
 					'left':$(this).position().left, // REMOVE TOP AND LEFT DATA
 					'top':$(this).position().top,
-					'onTarget':false,
-					'oFontSize':$(this).find('.response_text').css('font-size'),
-					'oWidth':$(this).outerWidth(),
-					'oHeight':$(this).outerHeight()
-				}).attr('data-value','');
+					'ofontsize':$(this).find('.response_text').css('font-size'),
+					'owidth':$(this).outerWidth(),
+					'oheight':$(this).outerHeight()
+				}).attr({'data-value':'','data-ontarget':'false'});
 									
 				// Check if response already has a value
 				if ( parseInt(xVal) >= 0 ) {
@@ -698,8 +751,8 @@
 						revert: 'invalid', 
 						zIndex: 2700, 
 						cursorAt: { 
-							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oHeight'))/2), 
-							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('oWidth'))/2) 
+							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
+							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
 						},
 						drag: function(){
 							dragCheck = true;
@@ -707,7 +760,8 @@
 						stop: function(){
 							dragCheck = false;
 						} 
-					})/*.bind('mouseup', function (event) {
+					}).data('ontarget',true)
+					/*.bind('mouseup', function (event) {
 						//noDrag(event.target);	
 					})*/;
 									
@@ -763,8 +817,8 @@
 								nTxtPaddingR = parseInt($(this).find('.responseText').css('padding-right')) * scaleOnTarget + "px",
 								nTxtPaddingB = parseInt($(this).find('.responseText').css('padding-bottom')) * scaleOnTarget + "px",
 								nTxtPaddingL = parseInt($(this).find('.responseText').css('padding-left')) * scaleOnTarget + "px",
-								nWidth = parseInt($(this).data('oWidth')) * scaleOnTarget,
-								nheight = parseInt($(this).data('oHeight')) * scaleOnTarget,
+								nWidth = parseInt($(this).data('owidth')) * scaleOnTarget,
+								nheight = parseInt($(this).data('oheight')) * scaleOnTarget,
 								nPaddingT = parseInt($(this).css('padding-top')) * scaleOnTarget + "px",
 								nPaddingR = parseInt($(this).css('padding-right')) * scaleOnTarget + "px",
 								nPaddingB = parseInt($(this).css('padding-bottom')) * scaleOnTarget + "px",
@@ -793,8 +847,8 @@
 							$(this).draggable( 
 								"option", {
 									cursorAt: { 
-										top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oHeight'))/2), 
-										left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('oWidth'))/2) 
+										top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
+										left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
 									},
 									revert:'invalid'
 								}
@@ -807,10 +861,10 @@
 						} else {
 							
 							var maxItemScale = scaleOnTarget,
-							topOrigin = $('.gridInner').offset().top,
-							leftOrigin = $('.gridInner').offset().left,
-							x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
-							y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+								topOrigin = $('.gridInner').offset().top,
+								leftOrigin = $('.gridInner').offset().left,
+								x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
+								y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
 	
 							$(this).offset({top:y,left:x});	
 							$(this).transition({ scale:maxItemScale }, options.animationSpeed,function() {
@@ -831,8 +885,8 @@
 						revert: 'invalid', 
 						zIndex: 2700, 
 						cursorAt: { 
-							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oHeight'))/2), 
-							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('oWidth'))/2) 
+							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
+							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
 						},
 						drag: function(){
 							dragCheck = true;
@@ -844,12 +898,17 @@
 						start: function () {
 
 						}
-					}).click( function() {
+					}).click( function(e) {
+						e.stopPropagation();
 						if ( !clickActive ) {
 							$(this).addClass('responseActive');
 							clickActive = true;
-							$('.gridOuter').append('<div class="innerTarget gridInner"></div>');
+							//$('.gridOuter').append('<div class="innerTarget gridInner"></div>');
+							$('.gridOuter').append('<div class="innerTarget gridInner"><table class="bottom" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" width="50%"></td><td class="tr" width="50%"></td></tr><tr><td class="bl"></td><td class="br"></td></tr></table><table class="top" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" height="25%" colspan="2" valign="top" align="center">' + $('.axisLabel.top .labelTxt').text() + '</td></tr><tr><td class="tr" width="50%" height="50%" align="left">' + $('.axisLabel.left .labelTxt').text() + '</td><td width="50%" height="50%" align="right">' + $('.axisLabel.right .labelTxt').text() + '</td></tr><tr><td class="bl"height="25%" colspan="2" valign="bottom" align="center">' + $('.axisLabel.bottom .labelTxt').text() + '</td></tr></table></div>');
 							$('.innerTarget').click( function(e) {
+								setTarget(e);
+							}).width($('.gridInner').outerWidth()).height($('.gridInner').outerHeight());
+							$('.startArea').click( function(e) {
 								setTarget(e);
 							});
 						}
@@ -860,7 +919,11 @@
 				
 			});
 			
-			
+			if ( stackResponses ) {
+				$('.responseItem').hide();
+				$('.responseItem[data-ontarget=true]').show();
+				$('.responseItem[data-ontarget=false]').first().show();
+			}
 			
 		}
 		
