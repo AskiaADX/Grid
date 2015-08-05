@@ -79,22 +79,3 @@
 .innerTarget .top, .innerTarget .bottom { position:absolute; top:0px; left:0px; }
 .innerTarget table { margin-top:2px; margin-left:1px; }
 .innerTarget .top td { color:#fff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); }
-.innerTarget .bottom .tl, .innerTarget .bottom .br {
-	opacity:0.5;
-	background: #ff3232;
-	background: -moz-linear-gradient(45deg,  #ff3232 0%, #ff3232 50%, #3af430 50%, #3af430 100%);
-	background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#ff3232), color-stop(50%,#ff3232), color-stop(50%,#3af430), color-stop(100%,#3af430));
-	background: -webkit-linear-gradient(45deg,  #ff3232 0%,#ff3232 50%,#3af430 50%,#3af430 100%);
-	background: -o-linear-gradient(45deg,  #ff3232 0%,#ff3232 50%,#3af430 50%,#3af430 100%);
-	background: -ms-linear-gradient(45deg,  #ff3232 0%,#ff3232 50%,#3af430 50%,#3af430 100%);
-	background: linear-gradient(45deg,  #ff3232 0%,#ff3232 50%,#3af430 50%,#3af430 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3232', endColorstr='#3af430',GradientType=1 );
-}
-.innerTarget .bottom .tr {
-	opacity:0.5; 
-	background: #3AF430;
-}
-.innerTarget .bottom .bl {
-	opacity:0.5; 
-	background: #FF3232;
-}

@@ -65,6 +65,9 @@ Dim dropAreaBorderThickness =CurrentADC.PropValue("dropAreaBorderThickness")
 Dim dropAreaBorderStyle =CurrentADC.PropValue("dropAreaBorderStyle")
 Dim dropAreaBorderRadius =CurrentADC.PropValue("dropAreaBorderRadius")
 Dim dropAreaShadow =CurrentADC.PropValue("dropAreaShadow")
+Dim showDropTargetColours =CurrentADC.PropValue("showDropTargetColours")
+Dim dropTargetColourPrimary =CurrentADC.PropValue("dropTargetColourPrimary")
+Dim dropTargetColourSecondary =CurrentADC.PropValue("dropTargetColourSecondary")
 
 Dim maxLabelWidth =CurrentADC.PropValue("maxLabelWidth")
 Dim minLabelWidth =CurrentADC.PropValue("minLabelWidth")
@@ -358,13 +361,45 @@ EndIF
 	{% EndIF %}
 }
 
-.gridCell {
+#adc_{%= CurrentADC.InstanceId%} .gridCell {
 	border-left:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
 	border-top:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
 }
-.gridCell.lastRow { 
+#adc_{%= CurrentADC.InstanceId%} .gridCell.lastRow { 
 	border-bottom:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
 }
-.gridCell.lastCol {
+#adc_{%= CurrentADC.InstanceId%} .gridCell.lastCol {
 	border-right:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+}
+#adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .tl, #adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .br {
+	{% IF showDropTargetColours = "1" Then %}
+		opacity:0.5;
+	{% Else %}
+		opacity:0;
+	{% EndIF %}
+	
+	background: rgb({%= dropTargetColourSecondary%});
+	background: -moz-linear-gradient(45deg,  rgb({%= dropTargetColourSecondary%}) 0%, rgb({%= dropTargetColourSecondary%}) 50%, rgb({%= dropTargetColourPrimary%}) 50%, rgb({%= dropTargetColourPrimary%}) 100%);
+	background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgb({%= dropTargetColourSecondary%})), color-stop(50%,rgb({%= dropTargetColourSecondary%})), color-stop(50%,rgb({%= dropTargetColourPrimary%})), color-stop(100%,rgb({%= dropTargetColourPrimary%})));
+	background: -webkit-linear-gradient(45deg,  rgb({%= dropTargetColourSecondary%}) 0%,rgb({%= dropTargetColourSecondary%}) 50%,rgb({%= dropTargetColourPrimary%}) 50%,rgb({%= dropTargetColourPrimary%}) 100%);
+	background: -o-linear-gradient(45deg,  rgb({%= dropTargetColourSecondary%}) 0%,rgb({%= dropTargetColourSecondary%}) 50%,rgb({%= dropTargetColourPrimary%}) 50%,rgb({%= dropTargetColourPrimary%}) 100%);
+	background: -ms-linear-gradient(45deg,  rgb({%= dropTargetColourSecondary%}) 0%,rgb({%= dropTargetColourSecondary%}) 50%,rgb({%= dropTargetColourPrimary%}) 50%,rgb({%= dropTargetColourPrimary%}) 100%);
+	background: linear-gradient(45deg,  rgb({%= dropTargetColourSecondary%}) 0%,rgb({%= dropTargetColourSecondary%}) 50%,rgb({%= dropTargetColourPrimary%}) 50%,rgb({%= dropTargetColourPrimary%}) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='rgb({%= dropTargetColourSecondary%})', endColorstr='rgb({%= dropTargetColourPrimary%})',GradientType=1 );
+}
+#adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .tr {
+	{% IF showDropTargetColours = "1" Then %}
+		opacity:0.5;
+	{% Else %}
+		opacity:0;
+	{% EndIF %}
+	background: rgb({%= dropTargetColourPrimary%});
+}
+#adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .bl {
+	{% IF showDropTargetColours = "1" Then %}
+		opacity:0.5;
+	{% Else %}
+		opacity:0;
+	{% EndIF %}
+	background: rgb({%= dropTargetColourSecondary%});
 }

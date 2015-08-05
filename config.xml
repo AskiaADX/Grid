@@ -336,6 +336,28 @@
           <option value="none" text="Off"/>
         </options>
       </property>	
+	  <property xsi:type="standardProperty" id="showDropTargetColours" name="Show Drop Target Colours" type="boolean" mode="static">
+        <description>
+          <![CDATA[Shows positive and negative colours for target when labels are hidden]]>
+        </description>
+        <value>true</value>
+      </property>
+	  <property xsi:type="standardProperty" id="dropTargetColourPrimary" name="Drop Target Colour Primary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Primary colour of the start area
+          ]]>
+        </description>
+        <value>58,244,48</value>
+      </property>
+	  <property xsi:type="standardProperty" id="dropTargetColourSecondary" name="Drop Target Colour Secondary" type="color" mode="static">
+        <description>
+          <![CDATA[
+            Primary colour of the start area
+          ]]>
+        </description>
+        <value>255,50,50</value>
+      </property>
 	</category>
 	
 	<category id="startArea" name="Start Area">
@@ -579,7 +601,7 @@
         </description>
         <value>none</value>
         <options>
-          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="0px 2px 3px 0px rgba(0,0,0,0.75)" text="On"/>
           <option value="none" text="Off"/>
         </options>
       </property>
@@ -718,7 +740,7 @@
         </description>
         <value>none</value>
         <options>
-          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="0px 2px 3px 0px rgba(0,0,0,0.75)" text="On"/>
           <option value="none" text="Off"/>
         </options>
       </property>
@@ -817,7 +839,7 @@
         </description>
         <value>none</value>
         <options>
-          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="0px 2px 3px 0px rgba(0,0,0,0.75)" text="On"/>
           <option value="none" text="Off"/>
         </options>
       </property>
@@ -878,7 +900,7 @@
         </description>
         <value>none</value>
         <options>
-          <option value="#999 0px 2px 3px" text="On"/>
+          <option value="0px 2px 3px 0px rgba(0,0,0,0.75)" text="On"/>
           <option value="none" text="Off"/>
         </options>
       </property>
