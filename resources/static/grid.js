@@ -146,6 +146,7 @@
 		}
 		$('.gridInner').width( $('.gridOuter').height() - 40)
 					   .height( $('.gridOuter').width() - 40);
+					   
 		cellSize = Math.floor( $('.gridInner').width() / gridSquares );
 		
 		$('.gridCell').each(function(i,e) {
@@ -166,11 +167,10 @@
 		
 		// Position Labels 
 		if ( !hideLabels ) {
-			$('.axisLabel.top').css('top', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
 			$('.gridOuter').css('top',($('.axisLabel.top').outerHeight() + 10) + 'px');
-			$('.axisLabel.bottom').css('bottom', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
 			$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
-			
+			$('.axisLabel.bottom').css('bottom', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
+			$('.axisLabel.top').css('top', (- 10 - $('.axisLabel.top').outerHeight()) + 'px');
 			$('.axisLabel.right').css('right', (0 - $('.axisLabel.right').outerWidth() - 10) + 'px');
 			$('.gridOuter').css('right',($('.axisLabel.right').outerWidth() + 10) + 'px');
 			$('.axisLabel.left').css('left', (0 - $('.axisLabel.left').outerWidth() - 10) + 'px');
@@ -196,6 +196,7 @@
 			'top':-$leftPos+'px',
 			'left':0+'px',
 			opacity: 0
+
 		});
 		$('.xCounter.bottom').css({
 			'top':$('.gridOuter').outerWidth()+'px',
