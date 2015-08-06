@@ -93,6 +93,10 @@ EndIF
 IF responseWidth = "" Then
 	responseWidth = "auto"
 EndIF
+IF startAreaWidth = "50%" And dropAreaContainerWidthHeight = "50%" Then
+	startAreaWidth = "49%"
+	dropAreaContainerWidthHeight = "49%"
+EndIF
 %}
 
 /* General */
@@ -138,7 +142,9 @@ EndIF
 	padding: {%= responsePadding%};
 	{% IF startAreaResponseAlign = "center" Then %}
 		float:none;
-		margin:0px auto;
+		margin: {%= responseMargin%};
+		margin-left:auto;
+		margin-right:auto;
 	{% ElseIf startAreaResponseAlign = "left" Then %}
 		margin: {%= responseMargin%};
 		float:left;

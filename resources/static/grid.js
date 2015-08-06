@@ -197,6 +197,7 @@
 			'left':0+'px',
 			opacity: 0
 
+
 		});
 		$('.xCounter.bottom').css({
 			'top':$('.gridOuter').outerWidth()+'px',
