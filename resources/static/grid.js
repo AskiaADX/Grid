@@ -112,14 +112,19 @@
 			//resize grid to max space
 			stackResponses = true;
 			$(this).css({'width':'100%'});
-			if ( hideLabelsMobile || hideLabels ) $('.axisLabel').hide();
 			$('.gridOuter, .gridInner, .startArea').css({'width':'100%'}).width('100%');
+			if ( hideLabelsMobile || hideLabels  ) {
+				hideLabels = true;
+				$('.axisLabel').css({'visibility':'hidden'}).width(0).height(0).hide();
+			}
 			$('.gridOuter').width( $(this).width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20)
 						   .height( $(this).width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20);
 			$('.gridInner').width( $('.gridOuter').height() - 40)
 						   .height( $('.gridOuter').width() - 40);
-			$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
-			$('.axisLabel.left, .axisLabel.right').height( $('.gridOuter').height() );
+			if ( !hideLabelsMobile ) {
+				$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
+				$('.axisLabel.left, .axisLabel.right').height( $('.gridOuter').height() );
+			}
 			$('.gridOuter').css({'marginBottom': $('.axisLabel.top').height() + $('.axisLabel.bottom').height() + 40 + 'px','width':'100%'});
 			dropAreaContainerWidthHeight = $('.gridOuter').width();
 			$('.startArea').width('100%').css({'marginBottom':'20px','text-align':'center'});
