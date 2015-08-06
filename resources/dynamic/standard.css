@@ -342,6 +342,8 @@ EndIF
 	color: rgb({%= labelFontColour%});
 	
 	padding: {%= labelPadding%};
+	
+	font-size:{%= fontSize%};
 }
 
 #adc_{%= CurrentADC.InstanceId%} .axisLabel.top .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.bottom .labelTxt { 
@@ -371,6 +373,7 @@ EndIF
 #adc_{%= CurrentADC.InstanceId%} .gridCell.lastCol {
 	border-right:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
 }
+#adc_{%= CurrentADC.InstanceId%} .innerTarget .top td { font-size:{%= fontSize%}; }
 #adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .tl, #adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .br {
 	{% IF showDropTargetColours = "1" Then %}
 		opacity:0.5;
