@@ -39,6 +39,7 @@
 		(options.imageAlign = options.imageAlign || 'left');
 		(options.loading = options.loading || 'Loading $prct'); // remove
 		(options.scaleOnTarget = options.scaleOnTarget || 0.5);
+		(options.originLocation = options.originLocation || 'bottomLeft' );
 		
 		// Delegate .transition() calls to .animate() if the browser can't do CSS transitions.
 		if (!$.support.transition) $.fn.transition = $.fn.animate;
@@ -104,7 +105,8 @@
 			y = 0,
 			cellBorderWidth = 0,
 			responseFontSize = parseInt(options.responseFontSize) * scaleOnTarget,
-			responseFontUnits = options.responseFontSize.split(responseFontSize)[1];
+			responseFontUnits = options.responseFontSize.split(responseFontSize)[1],
+			originLocation = options.originLocation;
 					
 		// check for mobile or reduced screen size
 		if( (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) || $(window).width() <= 400 ) {
@@ -196,10 +198,8 @@
 			'top':-$leftPos+'px',
 			'left':0+'px',
 			opacity: 0
-
-
-
 		});
+		
 		$('.xCounter.bottom').css({
 			'top':$('.gridOuter').outerWidth()+'px',
 			'left':0+'px',
@@ -225,25 +225,6 @@
 			'endX': $('.gridInner').width(),
 			'Y': parseInt($('.xCounter').css('top'))
 		});
-		
-		// check for mobile or reduced screen size
-		/*if( $(this).height() > $(window).height() ) {
-			// resize start area to max space
-			//resize grid to max space
-			stackResponses = true;
-			$(this).css({'width':'100%'});
-			$('.gridOuter').width( $(this).width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20)
-						   .height( $(this).width() - $(this).find('.axisLabel.left').width() - $(this).find('.axisLabel.right').width() - 20);
-			$('.gridInner').width( $('.gridOuter').height() - 40)
-						   .height( $('.gridOuter').width() - 40);
-			$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
-			$('.axisLabel.left, .axisLabel.right').height( $('.gridOuter').height() );
-			$('.gridOuter').css('marginBottom', $('.axisLabel.top').height() + $('.axisLabel.bottom').height() + 40 + 'px');
-			$('.startArea').width('100%').css({'marginBottom':'20px','text-align':'center'});
-			$('.responseItem').css({'marginLeft':'auto','marginRight':'auto','float':'none'});
-			scaleOnTarget = 0.2;
-
-		}*/
 		
 		function mouseFollow(e) { // mouseFollow() is called whenever the mouse enters a nav slider, id assigned to be slidePrev or slideNext
 
@@ -293,9 +274,14 @@
 				x =  Math.round( ( x/$( ".gridInner" ).width() ) * gridSquares );
 				y =  Math.round( ( y/$( ".gridInner" ).height() ) * gridSquares );
 					
-				// Write values				
-				items[($(ui.draggable).data('index')*2)].element.val(x);
-				items[($(ui.draggable).data('index')*2)+1].element.val(y);
+				// Write values	
+				if ( originLocation === 'bottomLeft' ) {			
+					items[($(ui.draggable).data('index')*2)].element.val(x);
+					items[($(ui.draggable).data('index')*2)+1].element.val(gridSquares - y);
+				} else {
+					items[($(ui.draggable).data('index')*2)].element.val(x - (gridSquares * 0.5));
+					items[($(ui.draggable).data('index')*2)+1].element.val((gridSquares * 0.5) - y);
+				}
 				
 				// IF IE8	
 				if (!Modernizr.csstransforms) {
@@ -359,7 +345,6 @@
 						},
 						stop: function(){
 							dragCheck = false;
-							//$(ui.draggable).off('click');
 						} 
 					}
 				);
@@ -376,13 +361,21 @@
 				
 				// Select next reponse
 				if ( selectNextResponse ) {
+					$('.responseActive').removeClass('responseActive');
+					clickActive = false;
+					$('.innerTarget').remove();
+					$('.startArea').off('click');
+					
 					$('.responseItem[data-ontarget=false]').first().addClass('responseActive');
 					clickActive = true;
+					
 					$('.gridOuter').append('<div class="innerTarget gridInner"><table class="bottom" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" width="50%"></td><td class="tr" width="50%"></td></tr><tr><td class="bl"></td><td class="br"></td></tr></table><table class="top" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" height="25%" colspan="2" valign="top" align="center">' + $('.axisLabel.top .labelTxt').text() + '</td></tr><tr><td class="tr" width="50%" height="50%" align="left">' + $('.axisLabel.left .labelTxt').text() + '</td><td width="50%" height="50%" align="right">' + $('.axisLabel.right .labelTxt').text() + '</td></tr><tr><td class="bl"height="25%" colspan="2" valign="bottom" align="center">' + $('.axisLabel.bottom .labelTxt').text() + '</td></tr></table></div>');
 					// IF IE7/8
 					if (!Modernizr.csstransforms) {
 						$('.innerTarget .bottom').hide();
 					}
+					if ( !hideLabels ) $('.innerTarget .top td').css('background','#000').css('opacity','.1').text('');
+					
 					$('.innerTarget').click( function(e) {
 						setTarget(e);
 					}).width($('.gridInner').outerWidth()).height($('.gridInner').outerHeight());
@@ -418,10 +411,21 @@
 				
 				if ( $('.responseActive').data('index') != null ) {
 					$('.responseActive').attr({'data-value':'','data-ontarget':'false'});
-					$('.responseActive').transition({ scale: 1, top:$('.responseActive').data('top'), left:$('.responseActive').data('left') }, options.animationSpeed);
-					// Write values				
-
-
+					
+					// IF IE8	
+					if (!Modernizr.csstransforms) {
+						var ratio = $('.responseActive').width() / $('.responseActive').data('owidth');
+						$('.responseActive').width( $('.responseActive').data('owidth') ).height( $('.responseActive').data('oheight') ).css('padding',$('.responseActive').data('opadding') );
+						$('.responseActive img').width( $('.responseActive img').data('owidth') ).height( $('.responseActive img').data('oheight') ).css('padding', '' );
+						$('.responseActive .response_text').css({'font-size' : $('.responseActive').data('ofontsize'),'padding' : '' });
+						$('.responseActive').transition({ top:$('.responseActive').data('top'), left:$('.responseActive').data('left') }, options.animationSpeed);
+						/*f*/					
+											
+					} else {
+						$('.responseActive').transition({ scale: 1, top:$('.responseActive').data('top'), left:$('.responseActive').data('left') }, options.animationSpeed);
+								
+					}
+					// Write values		
 					items[($('.responseActive').data('index')*2)].element.val('');
 					items[($('.responseActive').data('index')*2)+1].element.val('');
 					
@@ -445,24 +449,21 @@
 					startYPos = $('.gridInner').offset().top,
 					endYPos   = $('.gridInner').outerHeight(),
 					yLength   = endYPos,
-					//adjustmentX = (xLength - $('.xCounter').width()) / xLength,
-					//adjustmentY = (yLength - $('.yCounter').height()) / yLength,
 					$offSetLeft = $('.gridInner').offset().left,
 					$offSetTop =  $('.gridInner').offset().top;
-					//$newPosX = (e.pageX - $offSetLeft) * adjustmentX,
-					//$newPosY = (e.pageY - $offSetTop) * adjustmentY;
 				
 				//Counter numbers
 				var xVal =  Math.round( ( (e.pageX - $offSetLeft)/xLength ) * gridSquares ),
 					yVal =  Math.round( ( (e.pageY - $offSetTop)/yLength ) * gridSquares );
 				
-				// Write values				
-				items[($('.responseActive').data('index')*2)].element.val(xVal);
-				items[($('.responseActive').data('index')*2)+1].element.val(yVal);
-					
-	
-					//$x = $x - (gridSquares * 0.5);
-					//$y = (gridSquares * 0.5) - $y;
+				// Write values	
+				if ( originLocation === 'bottomLeft' ) {				
+					items[($('.responseActive').data('index')*2)].element.val(xVal);
+					items[($('.responseActive').data('index')*2)+1].element.val(gridSquares - yVal);
+				} else {
+					items[($('.responseActive').data('index')*2)].element.val(xVal - (gridSquares * 0.5));
+					items[($('.responseActive').data('index')*2)+1].element.val((gridSquares * 0.5) - yVal);
+				}
 					
 				// IF IE8	
 				if (!Modernizr.csstransforms) {
@@ -501,7 +502,7 @@
 						$('.responseActive .response_text').css({
 							'font-size':responseFontSize + responseFontUnits,
 							'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
-						}).hide();
+						});
 						$('.responseActive').css({
 							'width':nWidth,
 							'height':nheight,
@@ -553,6 +554,8 @@
 				if (!Modernizr.csstransforms) {
 					$('.innerTarget .bottom').hide();
 				}
+				if ( !hideLabels ) $('.innerTarget .top td').css('background','#000').css('opacity','.1').text('');
+				
 				$('.innerTarget').click( function(e) {
 					setTarget(e);
 				}).width($('.gridInner').outerWidth()).height($('.gridInner').outerHeight());
@@ -561,91 +564,6 @@
 				});
 			}
 			
-			
-					
-			/*if ( !removingItem ) {
-				if ( target === 'start' ) {
-					
-					if ( $(clickActive).data('index') != null ) {
-						$(clickActive).data({'ontarget':false}).attr({'data-value':''});
-						$(clickActive).transition({ scale: 1, top:$(clickActive).data('top'), left:$(clickActive).data('left') }, options.animationSpeed);
-						$('#' + iterations[$(clickActive).data('index')].id).val('');
-					}
-					
-				} else {
-					
-					// check for exclusivity if there are exclusive areas
-					// check if this is an exclusive droparea
-					var areaExclusive = false,
-						containerID = $( "#drop"+target ).data('index');
-					
-					if ( exclusiveAreas ) {
-						for ( var i=0; i<exclusiveArray.length; i++ ) {
-							if ( (parseInt(exclusiveArray[i]) >= 0 && (parseInt(exclusiveArray[i]) - 1) === containerID) || 
-								 ( parseInt(exclusiveArray[i]) < 0 && (parseInt(exclusiveArray[i]) + numberOfDropZones) === containerID) ) areaExclusive = true;
-						}
-					}
-					
-					// check if it already contains an item
-					if ( !(areaExclusive && $(".responseItem[data-value='" + containerID + "']").size() > 0) ) {
-						
-						if ( $(clickActive).data('ontarget') ) { // if already on target
-							
-							var val = target,
-								maxItemScale = options.scaleOnTarget,
-								x = $( "#drop"+val ).position().left - $(clickActive).outerWidth(true)*0.5 + ($( "#drop"+val ).outerWidth()*0.5),
-								y = $( "#drop"+val ).position().top - $(clickActive).outerHeight(true)*0.5 + ($( "#drop"+val ).outerHeight()*0.5);
-										
-							$(clickActive).data({'ontarget':true}).attr({'data-value':val});
-							$(clickActive).transition({top:y, left:x }, options.animationSpeed,function() {
-								sortItems(parseInt(val));
-							})
-								
-							$('#' + iterations[$(clickActive).data('index')].id).attr('value',$( "#drop"+target ).attr('data-value'));
-							
-						} else if ($(clickActive).data('index') != null) {
-							
-							$('#' + iterations[$(clickActive).data('index')].id).attr('value',$( "#drop"+target ).attr('data-value'));
-							
-							// IF IE7/8
-							if (!Modernizr.csstransforms) {
-								
-								var val = target;
-								
-								$(clickActive).attr({'data-value':val}).hide();
-								$('#drop'+target).find('.resMini'+$(clickActive).data('index')).show();
-								clickActive = '';
-								
-							} else {
-								
-								var val = target,
-									maxItemScale = options.scaleOnTarget,
-									x = $( "#drop"+val ).position().left - $(clickActive).outerWidth(true)*0.5 + ($( "#drop"+val ).outerWidth()*0.5),
-									y = $( "#drop"+val ).position().top - $(clickActive).outerHeight(true)*0.5 + ($( "#drop"+val ).outerHeight()*0.5);
-											
-								$(clickActive).data({'ontarget':true}).attr({'data-value':val});
-								$(clickActive).transition({ top:y, left:x }, options.animationSpeed,function() {
-									sortItems(parseInt(val));
-								})
-								
-							}
-							
-						}
-						
-						// Remove active status from item
-						$(clickActive).removeClass('responseActive');
-						clickActive = null;
-						$('.dropZone, .startArea').unbind();
-						
-						// Select next reponse
-						if ( selectNextResponse ) {
-							noDrag($(".responseItem[data-value='']").eq(0));	
-						}
-						
-					}
-					
-				}
-			}*/
 		}
 		
 		function init() {
@@ -726,6 +644,10 @@
 					items[($(ui.draggable).data('index')*2)].element.val('');
 					items[($(ui.draggable).data('index')*2)+1].element.val('');
 					
+					$('.responseActive').removeClass('responseActive');
+					clickActive = false;
+					$('.innerTarget').remove();
+					
 					if ( stackResponses ) {
 						$('.responseItem[data-ontarget=false]').hide();
 						$('.responseItem[data-ontarget=false]').first().show();
@@ -740,6 +662,8 @@
 						if (!Modernizr.csstransforms) {
 							$('.innerTarget .bottom').hide();
 						}
+						if ( !hideLabels ) $('.innerTarget .top td').css('background','#000').css('opacity','.1').text('');
+						
 						$('.innerTarget').click( function(e) {
 							setTarget(e);
 						}).width($('.gridInner').outerWidth()).height($('.gridInner').outerHeight());
@@ -794,13 +718,16 @@
 					yVal = items[($(this).data('index')*2)+1].element.val(),/* == ''*/
 					maxItemScale = scaleOnTarget,
 					newItemScale = 0;
-				
+				/*f*/
 				$(this).data({
 					'left':$(this).position().left, // REMOVE TOP AND LEFT DATA
 					'top':$(this).position().top,
 					'ofontsize':$(this).find('.response_text').css('font-size'),
-					'owidth':$(this).outerWidth(),
-					'oheight':$(this).outerHeight()
+					'owidth':$(this).width(),
+					'oheight':$(this).height(),
+					'opadding':$(this).css('padding'),
+					'oimgpadding':$(this).find('.img').css('padding'),
+					'otextpadding':$(this).find('.response_text').css('padding')
 				}).attr({'data-value':'','data-ontarget':'false'});
 									
 				// Check if response already has a value
@@ -823,120 +750,79 @@
 					/*.bind('mouseup', function (event) {
 						//noDrag(event.target);	
 					})*/;
-									
-					// IF IE7/8
-					/*if (!Modernizr.csstransforms) {
 						
-						$(this).attr({'data-value':val}).hide();
-						$('#drop'+val).find('.resMini'+$(this).data('index')).show();
+					// IF IE8	
+					if (!Modernizr.csstransforms) {
 						
-					} else {*/
-					
-						/*
-						var x = event.pageX - $('.gridInner').offset().left,
-							y = event.pageY - $('.gridInner').offset().top;
-						
-						// Calculate values
-						x =  Math.round( ( x/$( ".gridInner" ).width() ) * gridSquares );
-						y =  Math.round( ( y/$( ".gridInner" ).height() ) * gridSquares );
-						
-						*/
-						
-						/*var startXPos = $('.gridInner').offset().left,
-							endXPos   = $('.gridInner').outerWidth(),
-							xLength   = endXPos,
-							startYPos = $('.gridInner').offset().top,
-							endYPos   = $('.gridInner').outerHeight(),
-							yLength   = endYPos,
-							adjustmentX = (xLength - $('.xCounter').width()) / xLength,
-							adjustmentY = (yLength - $('.yCounter').height()) / yLength,
-							$offSetLeft = $('.gridInner').offset().left,
-							$offSetTop =  $('.gridInner').offset().top,
-							$newPosX = (e.pageX - $offSetLeft) * adjustmentX,
-							$newPosY = (e.pageY - $offSetTop) * adjustmentY;
-						
-						//Counter numbers
-						var $x =  Math.round( ( (e.pageX - $offSetLeft)/xLength ) * gridSquares ),
-							$y =  Math.round( ( (e.pageY - $offSetTop)/yLength ) * gridSquares );*/
+						var maxItemScale = scaleOnTarget,
+							topOrigin = $('.gridInner').offset().top,
+							leftOrigin = $('.gridInner').offset().left,
+							nImageWidth = ($(this).find('img').data('owidth') * scaleOnTarget) + "px",
+							nImageHeight = ($(this).find('img').data('oheight') * scaleOnTarget) + "px",
+							nImagePaddingT = parseInt($(this).find('img').css('padding-top')) * scaleOnTarget + "px",
+							nImagePaddingR = parseInt($(this).find('img').css('padding-right')) * scaleOnTarget + "px",
+							nImagePaddingB = parseInt($(this).find('img').css('padding-bottom')) * scaleOnTarget + "px",
+							nImagePaddingL = parseInt($(this).find('img').css('padding-left')) * scaleOnTarget + "px",
+							nTxtPaddingT = parseInt($(this).find('.responseText').css('padding-top')) * scaleOnTarget + "px",
+							nTxtPaddingR = parseInt($(this).find('.responseText').css('padding-right')) * scaleOnTarget + "px",
+							nTxtPaddingB = parseInt($(this).find('.responseText').css('padding-bottom')) * scaleOnTarget + "px",
+							nTxtPaddingL = parseInt($(this).find('.responseText').css('padding-left')) * scaleOnTarget + "px",
+							nWidth = parseInt($(this).data('owidth')) * scaleOnTarget,
+							nheight = parseInt($(this).data('oheight')) * scaleOnTarget,
+							nPaddingT = parseInt($(this).css('padding-top')) * scaleOnTarget + "px",
+							nPaddingR = parseInt($(this).css('padding-right')) * scaleOnTarget + "px",
+							nPaddingB = parseInt($(this).css('padding-bottom')) * scaleOnTarget + "px",
+							nPaddingL = parseInt($(this).css('padding-left')) * scaleOnTarget + "px",
+							x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
+							y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
 							
+						$(this).offset({top:(y),left:(x)});	
 						
-						// IF IE8	
-						if (!Modernizr.csstransforms) {
-							
-							var maxItemScale = scaleOnTarget,
-								topOrigin = $('.gridInner').offset().top,
-								leftOrigin = $('.gridInner').offset().left,
-								nImageWidth = ($(this).find('img').data('owidth') * scaleOnTarget) + "px",
-								nImageHeight = ($(this).find('img').data('oheight') * scaleOnTarget) + "px",
-								nImagePaddingT = parseInt($(this).find('img').css('padding-top')) * scaleOnTarget + "px",
-								nImagePaddingR = parseInt($(this).find('img').css('padding-right')) * scaleOnTarget + "px",
-								nImagePaddingB = parseInt($(this).find('img').css('padding-bottom')) * scaleOnTarget + "px",
-								nImagePaddingL = parseInt($(this).find('img').css('padding-left')) * scaleOnTarget + "px",
-								nTxtPaddingT = parseInt($(this).find('.responseText').css('padding-top')) * scaleOnTarget + "px",
-								nTxtPaddingR = parseInt($(this).find('.responseText').css('padding-right')) * scaleOnTarget + "px",
-								nTxtPaddingB = parseInt($(this).find('.responseText').css('padding-bottom')) * scaleOnTarget + "px",
-								nTxtPaddingL = parseInt($(this).find('.responseText').css('padding-left')) * scaleOnTarget + "px",
-								nWidth = parseInt($(this).data('owidth')) * scaleOnTarget,
-								nheight = parseInt($(this).data('oheight')) * scaleOnTarget,
-								nPaddingT = parseInt($(this).css('padding-top')) * scaleOnTarget + "px",
-								nPaddingR = parseInt($(this).css('padding-right')) * scaleOnTarget + "px",
-								nPaddingB = parseInt($(this).css('padding-bottom')) * scaleOnTarget + "px",
-								nPaddingL = parseInt($(this).css('padding-left')) * scaleOnTarget + "px",
-								x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - (nWidth*0.5),
-								y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - (nheight*0.5);
-								
-							$(this).offset({top:(y),left:(x)});	
-							
-							$(this).find('.response_text').css({'font-size':responseFontSize});
-							$(this).find('img').css({
-								'width':nImageWidth,
-								'height':nImageHeight,
-								'padding':nImagePaddingT + " " + nImagePaddingR + " " + nImagePaddingB + " " + nImagePaddingL
-							});
-							$(this).find('.response_text').css({
-								'font-size':responseFontSize + responseFontUnits,
-								'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
-							}).hide();
-							$(this).css({
-								'width':nWidth,
-								'height':nheight,
-								'padding':nPaddingT + " " + nPaddingR + " " + nPaddingB + " " + nPaddingL
-							});
-							
-							$(this).draggable( 
-								"option", {
-									cursorAt: { 
-										top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
-										left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
-									},
-									revert:'invalid'
-								}
-							);
-							
-							$(this).transition({ scale:maxItemScale }, 0,function() {
+						$(this).find('.response_text').css({'font-size':responseFontSize});
+						$(this).find('img').css({
+							'width':nImageWidth,
+							'height':nImageHeight,
+							'padding':nImagePaddingT + " " + nImagePaddingR + " " + nImagePaddingB + " " + nImagePaddingL
+						});
+						$(this).find('.response_text').css({
+							'font-size':responseFontSize + responseFontUnits,
+							'padding':nTxtPaddingT + " " + nTxtPaddingR + " " + nTxtPaddingB + " " + nTxtPaddingL
+						}).hide();
+						$(this).css({
+							'width':nWidth,
+							'height':nheight,
+							'padding':nPaddingT + " " + nPaddingR + " " + nPaddingB + " " + nPaddingL
 
-							});
-								
-						} else {
+						});
+						
+						$(this).draggable( 
+							"option", {
+								cursorAt: { 
+									top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
+									left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
+								},
+								revert:'invalid'
+							}
+						);
+						
+						$(this).transition({ scale:maxItemScale }, 0,function() {
+
+						});
 							
-							var maxItemScale = scaleOnTarget,
-								topOrigin = $('.gridInner').offset().top,
-								leftOrigin = $('.gridInner').offset().left,
-								x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
-								y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+					} else {
+						
+						var maxItemScale = scaleOnTarget,
+							topOrigin = $('.gridInner').offset().top,
+							leftOrigin = $('.gridInner').offset().left,
+							x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
+							y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+
+						$(this).offset({top:y,left:x});	
+						$(this).transition({ scale:maxItemScale }, options.animationSpeed,function() {
 	
-							$(this).offset({top:y,left:x});	
-							$(this).transition({ scale:maxItemScale }, options.animationSpeed,function() {
-		
-							});
-							
-						}
-							
-							
+						});
 						
-						
-						
-					/*}*/
+					}
 													
 				} else {
 					// Initialise draggables
@@ -952,7 +838,6 @@
 						},
 						stop: function(event, ui){
 							dragCheck = false;
-							//$( event.toElement ).on('click', function(e){ e.stopImmediatePropagation(); } );
 						},
 						start: function () {
 
@@ -968,12 +853,19 @@
 							if (!Modernizr.csstransforms) {
 								$('.innerTarget .bottom').hide();
 							}
+							if ( !hideLabels ) $('.innerTarget .top td').css('background','#000').css('opacity','.1').text('');
+							
 							$('.innerTarget').click( function(e) {
 								setTarget(e);
 							}).width($('.gridInner').outerWidth()).height($('.gridInner').outerHeight());
 							$('.startArea').click( function(e) {
 								setTarget(e);
 							});
+						} else {
+							$(this).removeClass('responseActive');
+							clickActive = false;
+							$('.innerTarget').remove();
+							$('.startArea').off('click');
 						}
 					});
 				}
@@ -997,6 +889,8 @@
 				if (!Modernizr.csstransforms) {
 					$('.innerTarget .bottom').hide();
 				}
+				if ( !hideLabels ) $('.innerTarget .top td').css('background','#000').css('opacity','.1').text('');
+				
 				$('.innerTarget').click( function(e) {
 					setTarget(e);
 				}).width($('.gridInner').outerWidth()).height($('.gridInner').outerHeight());
