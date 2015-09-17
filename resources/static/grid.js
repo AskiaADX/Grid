@@ -107,7 +107,7 @@
 			responseFontSize = parseInt(options.responseFontSize) * scaleOnTarget,
 			responseFontUnits = options.responseFontSize.split(responseFontSize)[1],
 			originLocation = options.originLocation;
-					
+								
 		// check for mobile or reduced screen size
 		if( (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) || $(window).width() <= 400 ) {
 			// resize start area to max space
@@ -254,9 +254,22 @@
 			$y = (gridSquares * 0.5) - $y;
 				
 			$('.xCounter').css({ left: ($newPosX-1)+'px' });
-			$('.xCounter .counterTxt').html($x);
 			$('.yCounter').css({ top: ($newPosY-1)+'px' });
-			$('.yCounter .counterTxt').html($y);
+			/*m*/
+			if ( originLocation === 'bottomLeft' ) {	
+				$('.xCounter .counterTxt').html($x + (gridSquares * 0.5));
+				$('.yCounter .counterTxt').html($y + (gridSquares * 0.5));
+			} else {
+				$('.xCounter .counterTxt').html($x);
+				$('.yCounter .counterTxt').html($y);
+			}
+			/*if ( originLocation === 'bottomLeft' ) {				
+					items[($('.responseActive').data('index')*2)].element.val(xVal);
+					items[($('.responseActive').data('index')*2)+1].element.val(gridSquares - yVal);
+				} else {
+					items[($('.responseActive').data('index')*2)].element.val(xVal - (gridSquares * 0.5));
+					items[($('.responseActive').data('index')*2)+1].element.val((gridSquares * 0.5) - yVal);
+				}*/
 		}
 		
 		// Initialise droppable	
@@ -282,6 +295,8 @@
 					items[($(ui.draggable).data('index')*2)].element.val(x - (gridSquares * 0.5));
 					items[($(ui.draggable).data('index')*2)+1].element.val((gridSquares * 0.5) - y);
 				}
+				
+				$(ui.draggable).data({'revertX':$(ui.draggable).position().left,'revertY':$(ui.draggable).position().top});
 				
 				// IF IE8	
 				if (!Modernizr.csstransforms) {
@@ -335,9 +350,21 @@
 				// Set value to card?	
 				$( ui.draggable ).draggable(
 					options, {
+						revert: function(valid) {
+							if(valid) {
+								//Dropped in a valid location
+							}
+							else {
+								$(ui.draggable).animate({"left": $(ui.draggable).data('revertX'), "top": $(ui.draggable).data('revertY')}, "slow");
+								//Dropped in an invalid location
+							}
+							//return !valid;
+						},
 						cursorAt: { 
-							top:(!Modernizr.csstransforms)?($(ui.draggable).outerHeight()/2):(parseInt($(ui.draggable).data('oheight'))/2), 
-							left:(!Modernizr.csstransforms)?($(ui.draggable).outerWidth()/2):(parseInt($(ui.draggable).data('owidth'))/2)
+							/*top:(!Modernizr.csstransforms)?($(ui.draggable).outerHeight()/2):(parseInt($(ui.draggable).data('oheight'))/2), 
+							left:(!Modernizr.csstransforms)?($(ui.draggable).outerWidth()/2):(parseInt($(ui.draggable).data('owidth'))/2)*/
+							top:(!Modernizr.csstransforms)?($(ui.draggable).outerHeight()/2):($(ui.draggable).outerHeight()/2), 
+							left:(!Modernizr.csstransforms)?($(ui.draggable).outerWidth()/2):($(ui.draggable).outerWidth()/2)
 						},
 						zIndex: 9999,
 						drag: function(){
@@ -419,12 +446,12 @@
 						$('.responseActive img').width( $('.responseActive img').data('owidth') ).height( $('.responseActive img').data('oheight') ).css('padding', '' );
 						$('.responseActive .response_text').css({'font-size' : $('.responseActive').data('ofontsize'),'padding' : '' });
 						$('.responseActive').transition({ top:$('.responseActive').data('top'), left:$('.responseActive').data('left') }, options.animationSpeed);
-						/*f*/					
 											
 					} else {
 						$('.responseActive').transition({ scale: 1, top:$('.responseActive').data('top'), left:$('.responseActive').data('left') }, options.animationSpeed);
 								
 					}
+					
 					// Write values		
 					items[($('.responseActive').data('index')*2)].element.val('');
 					items[($('.responseActive').data('index')*2)+1].element.val('');
@@ -513,8 +540,10 @@
 					$('.responseActive').draggable( 
 							"option", {
 								cursorAt: { 
-									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oheight'))/2), 
-									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('owidth'))/2) 
+									/*top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oheight'))/2), 
+									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('owidth'))/2) */
+									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):($('.responseActive').outerHeight()/2), 
+									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):($('.responseActive').outerWidth()/2) 
 								}
 							}
 						);
@@ -523,14 +552,14 @@
 					clickActive = false;
 										
 				} else {
-					
+									
 					var maxItemScale = scaleOnTarget,
 						topOrigin = $('.gridInner').offset().top,
 						leftOrigin = $('.gridInner').offset().left,
-						x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($(this).outerWidth()*0.5),
-						y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($(this).outerHeight()*0.5);
+						x = leftOrigin + ((xVal/gridSquares) * $('.gridInner').outerWidth()) - ($('.responseActive').outerWidth()*0.5),
+						y = topOrigin + ((yVal/gridSquares) * $('.gridInner').outerHeight()) - ($('.responseActive').outerHeight()*0.5);
 					
-					$('.responseActive').offset({top:(y - $('.responseActive').data('oheight')*0.5),left:(x - $('.responseActive').data('owidth')*0.5)});	
+					$('.responseActive').offset({top:y/*(y - $('.responseActive').data('oheight')*0.5)*/,left:x/*(x - $('.responseActive').data('owidth')*0.5)*/});	
 					$('.responseActive').transition({ scale:maxItemScale }, 0,function() {
 						$('.responseActive').removeClass('responseActive');
 						clickActive = false;
@@ -547,6 +576,8 @@
 			
 			// Select next reponse
 			if ( selectNextResponse ) {
+				$('.responseActive').removeClass('responseActive');
+				$('.innerTarget').remove();
 				$('.responseItem[data-ontarget=false]').first().addClass('responseActive');
 				clickActive = true;
 				$('.gridOuter').append('<div class="innerTarget gridInner"><table class="bottom" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" width="50%"></td><td class="tr" width="50%"></td></tr><tr><td class="bl"></td><td class="br"></td></tr></table><table class="top" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" height="25%" colspan="2" valign="top" align="center">' + $('.axisLabel.top .labelTxt').text() + '</td></tr><tr><td class="tr" width="50%" height="50%" align="left">' + $('.axisLabel.left .labelTxt').text() + '</td><td width="50%" height="50%" align="right">' + $('.axisLabel.right .labelTxt').text() + '</td></tr><tr><td class="bl"height="25%" colspan="2" valign="bottom" align="center">' + $('.axisLabel.bottom .labelTxt').text() + '</td></tr></table></div>');
@@ -617,8 +648,10 @@
 						$( ui.draggable ).draggable( 
 							"option", {
 								cursorAt: { 
-									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oheight'))/2), 
-									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('owidth'))/2) 
+									/*top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):(parseInt($('.responseActive').data('oheight'))/2), 
+									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):(parseInt($('.responseActive').data('owidth'))/2) */
+									top:(!Modernizr.csstransforms)?($('.responseActive').outerHeight()/2):($('.responseActive').outerHeight()/2), 
+									left:(!Modernizr.csstransforms)?($('.responseActive').outerWidth()/2):($('.responseActive').outerWidth()/2) 
 								},
 								revert:'invalid'
 							}
@@ -655,6 +688,7 @@
 					
 					// Select next reponse
 					if ( selectNextResponse ) {
+						$('.responseActive').removeClass('responseActive');
 						$('.responseItem[data-ontarget=false]').first().addClass('responseActive');
 						clickActive = true;
 						$('.gridOuter').append('<div class="innerTarget gridInner"><table class="bottom" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" width="50%"></td><td class="tr" width="50%"></td></tr><tr><td class="bl"></td><td class="br"></td></tr></table><table class="top" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" height="25%" colspan="2" valign="top" align="center">' + $('.axisLabel.top .labelTxt').text() + '</td></tr><tr><td class="tr" width="50%" height="50%" align="left">' + $('.axisLabel.left .labelTxt').text() + '</td><td width="50%" height="50%" align="right">' + $('.axisLabel.right .labelTxt').text() + '</td></tr><tr><td class="bl"height="25%" colspan="2" valign="bottom" align="center">' + $('.axisLabel.bottom .labelTxt').text() + '</td></tr></table></div>');
@@ -719,6 +753,25 @@
 					maxItemScale = scaleOnTarget,
 					newItemScale = 0;
 				/*f*/
+				if ( xVal != '' ) {
+					if ( originLocation === "bottomLeft" ) {
+						yVal = gridSquares - yVal;
+					} else {
+						xVal = parseInt(xVal) + (gridSquares * 0.5);
+						yVal = (gridSquares * 0.5) - parseInt(yVal);
+					}
+				}
+				
+				/*
+				if ( originLocation === 'bottomLeft' ) {			
+					items[($(ui.draggable).data('index')*2)].element.val(x);
+					items[($(ui.draggable).data('index')*2)+1].element.val(gridSquares - y);
+				} else {
+					items[($(ui.draggable).data('index')*2)].element.val(x - (gridSquares * 0.5));
+					items[($(ui.draggable).data('index')*2)+1].element.val((gridSquares * 0.5) - y);
+				}
+				*/
+				
 				$(this).data({
 					'left':$(this).position().left, // REMOVE TOP AND LEFT DATA
 					'top':$(this).position().top,
@@ -731,14 +784,17 @@
 				}).attr({'data-value':'','data-ontarget':'false'});
 									
 				// Check if response already has a value
-				if ( parseInt(xVal) >= 0 ) {
+				//if ( parseInt(xVal) >= 0 ) {
+				if ( xVal != '' ) {
 					
 					$(this).draggable({ 
 						revert: 'invalid', 
 						zIndex: 2700, 
 						cursorAt: { 
-							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
-							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
+							/*top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
+							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) */
+							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):($(this).outerHeight()/2), 
+							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):($(this).outerWidth()/2)
 						},
 						drag: function(){
 							dragCheck = true;
@@ -746,7 +802,7 @@
 						stop: function(){
 							dragCheck = false;
 						} 
-					}).data('ontarget',true)
+					}).attr('data-ontarget',true)
 					/*.bind('mouseup', function (event) {
 						//noDrag(event.target);	
 					})*/;
@@ -798,12 +854,16 @@
 						$(this).draggable( 
 							"option", {
 								cursorAt: { 
-									top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
-									left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
+									/*top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
+									left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) /*/
+									top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):($(this).outerHeight()/2), 
+									left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):($(this).outerWidth()/2)
 								},
 								revert:'invalid'
 							}
 						);
+						
+						$(this).data({'revertX':$(ui.draggable).position().left,'revertY':$(ui.draggable).position().top});
 						
 						$(this).transition({ scale:maxItemScale }, 0,function() {
 
@@ -830,8 +890,10 @@
 						revert: 'invalid', 
 						zIndex: 2700, 
 						cursorAt: { 
-							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
-							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
+							//top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):(parseInt($(this).data('oheight'))/2), 
+							//left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):(parseInt($(this).data('owidth'))/2) 
+							top:(!Modernizr.csstransforms)?($(this).outerHeight()/2):($(this).outerHeight()/2), 
+							left:(!Modernizr.csstransforms)?($(this).outerWidth()/2):($(this).outerWidth()/2) 
 						},
 						drag: function(){
 							dragCheck = true;
@@ -845,6 +907,8 @@
 					}).click( function(e) {
 						e.stopPropagation();
 						if ( !clickActive ) {
+							$('.responseActive').removeClass('responseActive');
+							$('.innerTarget').remove();
 							$(this).addClass('responseActive');
 							clickActive = true;
 							//$('.gridOuter').append('<div class="innerTarget gridInner"></div>');
@@ -862,7 +926,7 @@
 								setTarget(e);
 							});
 						} else {
-							$(this).removeClass('responseActive');
+							$('.responseActive').removeClass('responseActive');
 							clickActive = false;
 							$('.innerTarget').remove();
 							$('.startArea').off('click');
@@ -882,6 +946,8 @@
 			
 			// Select next reponse
 			if ( selectNextResponse ) {
+				$('.responseActive').removeClass('responseActive');
+				$('.innerTarget').remove();
 				$('.responseItem[data-ontarget=false]').first().addClass('responseActive');
 				clickActive = true;
 				$('.gridOuter').append('<div class="innerTarget gridInner"><table class="bottom" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" width="50%"></td><td class="tr" width="50%"></td></tr><tr><td class="bl"></td><td class="br"></td></tr></table><table class="top" cellpadding="0" cellspacing="0" border="0" width="' + $('.gridInner').outerWidth() + '" height="' + $('.gridInner').outerHeight() + '"><tr><td class="tl" height="25%" colspan="2" valign="top" align="center">' + $('.axisLabel.top .labelTxt').text() + '</td></tr><tr><td class="tr" width="50%" height="50%" align="left">' + $('.axisLabel.left .labelTxt').text() + '</td><td width="50%" height="50%" align="right">' + $('.axisLabel.right .labelTxt').text() + '</td></tr><tr><td class="bl"height="25%" colspan="2" valign="bottom" align="center">' + $('.axisLabel.bottom .labelTxt').text() + '</td></tr></table></div>');

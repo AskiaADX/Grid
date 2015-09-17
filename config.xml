@@ -207,6 +207,17 @@
     </category>
 	
 	<category id="grid" name="Grid and drop area">
+	
+	  <property xsi:type="standardProperty" id="originLocation" name="Origin Location" type="string" mode="static">
+        <description>
+          <![CDATA[Speed of the animation]]>
+        </description>
+        <value>center</value>
+        <options>
+          <option value="center" text="Center"/>
+          <option value="bottomLeft" text="Bottom Left"/>
+        </options>
+      </property>
 	  <property xsi:type="standardProperty" id="gridSquares" name="Number of grid squares per row" type="number" mode="static">
 		  <description>
 			<![CDATA[This will set the number of grid squares per row / column]]>

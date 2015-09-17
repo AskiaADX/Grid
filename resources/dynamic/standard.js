@@ -22,6 +22,7 @@ $(window).load(function() {
 		hideLabels : {%= (CurrentADC.PropValue("hideLabels") = "1") %},
 		hideLabelsMobile : {%= (CurrentADC.PropValue("hideLabelsMobile") = "1") %},
 		responseFontSize : '{%= CurrentADC.PropValue("fontSize") %}',
+		originLocation : '{%= CurrentADC.PropValue("originLocation") %}',
 		items : [
 			{%:= CurrentADC.GetContent("dynamic/standard_numeric.js").ToText()%}
 		]
