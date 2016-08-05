@@ -174,7 +174,7 @@
 			$('.axisLabel.bottom').css('bottom', (0 - $('.axisLabel.top').outerHeight() - 10) + 'px');
 			$('.axisLabel.top').css('top', (- 10 - $('.axisLabel.top').outerHeight()) + 'px');
 			$('.axisLabel.right').css('right', (0 - $('.axisLabel.right').outerWidth() - 10) + 'px');
-			$('.gridOuter').css('right',($('.axisLabel.right').outerWidth() + 10) + 'px');
+			/*$('.gridOuter').css('right',($('.axisLabel.right').outerWidth() + 10) + 'px');*/
 			$('.axisLabel.left').css('left', (0 - $('.axisLabel.left').outerWidth() - 10) + 'px');
 			
 			$('.axisLabel.right .labelTxt').css('top', (($('.gridOuter').height()*0.5) - ($('.axisLabel.right .labelTxt').outerHeight()*0.5)) + 'px');
