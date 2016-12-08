@@ -109,7 +109,7 @@
 			originLocation = options.originLocation;
 								
 		// check for mobile or reduced screen size
-		if( (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) || $(window).width() <= 400 ) {
+		if( (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) || $(window).width() <= 480 ) {
 			// resize start area to max space
 			//resize grid to max space
 			stackResponses = true;
@@ -127,11 +127,20 @@
 				$('.axisLabel.top, .axisLabel.bottom').width( $('.gridOuter').width() );
 				$('.axisLabel.left, .axisLabel.right').height( $('.gridOuter').height() );
 			}
-			$('.gridOuter').css({'marginBottom': $('.axisLabel.top').height() + $('.axisLabel.bottom').height() + 40 + 'px','width':'100%'});
+			$('.gridOuter').css({'marginBottom': $('.axisLabel.top').height() + $('.axisLabel.bottom').height() + 40 + 'px','width':'100%','float':'none'});
 			dropAreaContainerWidthHeight = $('.gridOuter').width();
-			$('.startArea').width('100%').css({'marginBottom':'20px','text-align':'center'});
+			$('.startArea').width('100%').css({'marginBottom':'20px','text-align':'center','float':'none'});
 			$('.responseItem').css({'marginLeft':'auto','marginRight':'auto','float':'none'});
 			scaleOnTarget = 0.2;
+			if ( !hideLabelsMobile ) {
+				// Find biggest label width
+				if ( $(".axisLabel.right").outerWidth() > $(".axisLabel.left").outerWidth() ) {
+					$('.gridOuter').css('margin-left', $(".axisLabel.left").outerWidth() + 10 + "px");
+				} else {
+					$('.gridOuter').css('margin-right', $(".axisLabel.right").outerWidth() + 10 + "px");
+				}
+				
+			}
 			
 		}
 		// fix dropAreaContainerWidthHeight if it's a percentage

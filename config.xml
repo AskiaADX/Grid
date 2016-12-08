@@ -7,7 +7,7 @@
   <info>
     <name>adc2-grid</name>
     <guid>1a69f3de-ba10-461f-9516-0a1cb1feb841</guid>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <date>2015-02-13</date>
     <description>
       <![CDATA[
@@ -21,7 +21,7 @@
           - Name of the 3rd party resource. Version. URL
         
         Notes:
-          Special notes about incompatibility or warnings
+          v1.01 - fixed layout bug when labels showing for mobile
       ]]>
     </description>
     <author>
