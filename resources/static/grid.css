@@ -3,7 +3,7 @@
 
 .controlContainer { position:relative; }
 
-.gridOuter { display:block; height:342px; width:342px; background:#09F; position:relative; padding-top:1px;/*position:absolute; right:0px; top:0px;*/ }
+.gridOuter { display:block; height:342px; width:342px; position:relative; padding-top:1px;/*position:absolute; right:0px; top:0px;*/ }
 .gridOuter:after {
 	content:"";
 	display:block;
@@ -23,9 +23,9 @@
 
 .responseItem img { -ms-interpolation-mode: bicubic; }
 
-.response_text { display:block; text-align:center; color:#000; }
+.response_text { display:block; text-align:center; }
 
-.responseActive { background:#FF0; }
+.responseActive { }
 
 .startArea { display:block; width:400px; position:relative }
 

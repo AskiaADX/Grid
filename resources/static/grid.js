@@ -419,6 +419,9 @@
 						setTarget(e);
 					});
 				}
+                if (window.askia) {
+                    askia.triggerAnswer();
+                }
 				
 			},
 			over: function( event, ui ) {
@@ -603,7 +606,9 @@
 					setTarget(e);
 				});
 			}
-			
+			if (window.askia) {
+                askia.triggerAnswer();
+            }
 		}
 		
 		function init() {
@@ -713,7 +718,10 @@
 						$('.startArea').click( function(e) {
 							setTarget(e);
 						});
-					}
+                    }
+                    if (window.askia) {
+                        askia.triggerAnswer();
+                    }
 						
 				}
 			}).height( $('.startArea').outerHeight() );
