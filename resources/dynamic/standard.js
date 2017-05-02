@@ -1,4 +1,4 @@
-﻿/* standard_default.js */
+/* standard_default.js */
 $(window).load(function() {
 	$('#adc_{%= CurrentADC.InstanceId %}').adcGrid({
 		
@@ -23,6 +23,7 @@ $(window).load(function() {
 		hideLabelsMobile : {%= (CurrentADC.PropValue("hideLabelsMobile") = "1") %},
 		responseFontSize : '{%= CurrentADC.PropValue("fontSize") %}',
 		originLocation : '{%= CurrentADC.PropValue("originLocation") %}',
+      	currentQuestion: '{%:= CurrentQuestion.Shortcut %}',
 		items : [
 			{%:= CurrentADC.GetContent("dynamic/standard_numeric.js").ToText()%}
 		]
