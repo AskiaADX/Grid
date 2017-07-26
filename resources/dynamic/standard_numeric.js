@@ -1,8 +1,8 @@
-﻿/* standard_numeric.js */
+/* standard_numeric.js */
 {% 
 Dim i
-Dim arr = CurrentQuestion.ParentLoop.ParentLoop.AvailableResponses
-Dim ar = CurrentQuestion.ParentLoop.AvailableResponses
+Dim arr = CurrentQuestion.ParentLoop.ParentLoop.Answers
+Dim ar = CurrentQuestion.ParentLoop.Answers
 Dim inputName
 For i = 1 To arr.Count
 	inputName = CurrentQuestion.Iteration(ar[1].Index,arr[i].Index).InputName()
