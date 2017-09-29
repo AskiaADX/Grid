@@ -7,7 +7,7 @@
   <info>
     <name>Grid</name>
     <guid>1a69f3de-ba10-461f-9516-0a1cb1feb841</guid>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <date>2015-02-13</date>
     <description><![CDATA[Describe your ADC here
         	New ADC grid control
@@ -71,17 +71,25 @@
   </outputs>
   <properties>
     <category id="general" name="General">
-      <property xsi:type="standardProperty" id="stackResponses" name="Stack Responses" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="stackResponses" name="Stack Responses" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[Whether the resonses are in a single pile]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="autoStackWidth" name="Automatic Stacking Width" type="number" mode="static" require="false" visible="true">
         <description><![CDATA[When set will turn on Stack Responses when the screen is below a certain width]]></description>
         <value><![CDATA[400]]></value>
       </property>
-      <property xsi:type="standardProperty" id="selectNextResponse" name="Automatically Select Next Response" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="selectNextResponse" name="Automatically Select Next Response" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[Whether to automatically select the next response]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="fontSize" name="Font Size" type="string" mode="dynamic" require="true" visible="false">
         <description><![CDATA[The font size for the control]]></description>
@@ -99,13 +107,9 @@
         ]]></description>
         <value><![CDATA[100%]]></value>
       </property>
-      <property xsi:type="standardProperty" id="controlAlign" name="Control Alignment" type="string" mode="static">
-        <description><![CDATA[
-          
-	          The alignment of the control
-	        
-        ]]></description>
-        <value><![CDATA[left]]></value>
+      <property xsi:type="standardProperty" id="controlAlign" name="Control Alignment" type="string" mode="static" require="false" visible="true">
+        <description><![CDATA[The alignment of the control]]></description>
+        <value><![CDATA[center]]></value>
         <options>
           <option value="left" text="Left" />
           <option value="center" text="Center" />
@@ -144,9 +148,13 @@
         <description><![CDATA[The amount of curve on the response corners]]></description>
         <value><![CDATA[{%= Theme.BorderRadius %}]]></value>
       </property>
-      <property xsi:type="standardProperty" id="animateResponses" name="Animate Responses" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="animateResponses" name="Animate Responses" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[Whether the resonses fly into the screen]]></description>
         <value><![CDATA[0]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="animationSpeed" name="Animation Speed" type="string" mode="static">
         <description><![CDATA[
@@ -160,9 +168,13 @@
           <option value="slow" text="Slow" />
         </options>
       </property>
-      <property xsi:type="standardProperty" id="autoForward" name="Auto Forward" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="autoForward" name="Auto Forward" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[Whether the question continues to the next automatically if a single choice question]]></description>
         <value><![CDATA[0]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
     </category>
     <category id="grid" name="Grid and drop area">
@@ -234,9 +246,13 @@
           <option value="none" text="Off" />
         </options>
       </property>
-      <property xsi:type="standardProperty" id="showDropTargetColours" name="Show Drop Target Colours" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="showDropTargetColours" name="Show Drop Target Colours" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[Shows positive and negative colours for target when labels are hidden]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="dropTargetColourPrimary" name="Drop Target Colour Primary" type="color" mode="static" require="false" visible="false">
         <description><![CDATA[Primary colour of the start area]]></description>
@@ -307,13 +323,21 @@
       </property>
     </category>
     <category id="axisLabels" name="Axis Labels">
-      <property xsi:type="standardProperty" id="hideLabels" name="Hide Labels" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="hideLabels" name="Hide Labels" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[This will hide the axis labels]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
-      <property xsi:type="standardProperty" id="hideLabelsMobile" name="Hide Labels for Mobile" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="hideLabelsMobile" name="Hide Labels for Mobile" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[This will hide the axis labels for mobiles]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="minLabelWidth" name="Min Label Width" type="string" mode="static">
         <description><![CDATA[
@@ -491,25 +515,37 @@
           <option value="none" text="Off" />
         </options>
       </property>
-      <property xsi:type="standardProperty" id="showResponseHoverColour" name="Show Response Hover Colour" type="boolean" mode="static" require="true" visible="false">
+      <property xsi:type="standardProperty" id="showResponseHoverColour" name="Show Response Hover Colour" type="string" mode="dynamic" require="true" visible="false">
         <description><![CDATA[This will change the colour of responses when hovered over]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="responseHoverColourPrimary" name="Response Hover Background Colour" type="color" mode="dynamic" require="true" visible="false">
         <description><![CDATA[Background colour of the response when hovering]]></description>
         <value><![CDATA[{%= Theme.WhiteColor %}]]></value>
       </property>
-      <property xsi:type="standardProperty" id="showResponseHoverFontColour" name="Show Response Hover Font Colour" type="boolean" mode="static" require="true" visible="false">
+      <property xsi:type="standardProperty" id="showResponseHoverFontColour" name="Show Response Hover Font Colour" type="string" mode="dynamic" require="true" visible="false">
         <description><![CDATA[This will change the colour of the text of responses when hovered over]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="responseHoverFontColour" name="Response Hover Font Colour" type="color" mode="dynamic" require="true" visible="false">
         <description><![CDATA[Font colour for responses when hovering]]></description>
         <value><![CDATA[{%= Theme.BlackColor %}]]></value>
       </property>
-      <property xsi:type="standardProperty" id="showResponseHoverBorder" name="Show Response Hover Border" type="boolean" mode="static" require="false" visible="false">
+      <property xsi:type="standardProperty" id="showResponseHoverBorder" name="Show Response Hover Border" type="string" mode="dynamic" require="true" visible="false">
         <description><![CDATA[This will change the colour of the border of responses when hovered over]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="responseHoverBorderColour" name="Response Hover Border Colour" type="color" mode="dynamic" require="true" visible="false">
         <description><![CDATA[Border colour for responses when hovering]]></description>
@@ -530,9 +566,13 @@
           <option value="double" text="Double" />
         </options>
       </property>
-      <property xsi:type="standardProperty" id="showResponseHoverShadow" name="Show Response Hover Shadow" type="boolean" mode="static" require="false" visible="false">
+      <property xsi:type="standardProperty" id="showResponseHoverShadow" name="Show Response Hover Shadow" type="string" mode="dynamic" require="true" visible="false">
         <description><![CDATA[This will change the colour of the shadow of responses when hovered over]]></description>
         <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="responseHoverShadow" name="Response Hover Drop Shadow" type="string" mode="static" require="false" visible="false">
         <description><![CDATA[The visibility of a dropshadow under the responses when hovering]]></description>
@@ -579,9 +619,13 @@
       </property>
     </category>
     <category id="images" name="Images">
-      <property xsi:type="standardProperty" id="autoImageSize" name="Force image to fit" type="boolean" mode="static" require="false" visible="true">
+      <property xsi:type="standardProperty" id="autoImageSize" name="Force image to fit" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[If response height or width is forced then image will be resized to fit within container. If on this will override image resizeing rules]]></description>
         <value><![CDATA[0]]></value>
+        <options>
+          <option value="1" text="Yes" />
+          <option value="0" text="No" />
+        </options>
       </property>
       <property xsi:type="standardProperty" id="maxImageWidth" name="Max Image Width" type="number" mode="static">
         <description><![CDATA[
