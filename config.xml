@@ -20,7 +20,8 @@
         
         Notes:
           v1.0.1 - fixed layout bug when labels showing for mobile
-		  v2.0.0 - Theme implementation]]></description>
+		  v2.0.0 - Theme implementation
+		  v2.0.2 - Add alt attribute to img]]></description>
     <company>Askia</company>
     <author><![CDATA[Paul Ferreira <paulf@askia.com>]]></author>
     <site>http://www.askia.com</site>

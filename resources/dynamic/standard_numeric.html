@@ -45,7 +45,7 @@ For i = 1 To arr.Count
             <div class="response_text">{%:= caption %}</div>
         {% EndIF %}
         {% IF image <> "" Then %}
-            <img src="{%= image %}" />
+            <img src="{%= image %}" alt="{%:= caption %}"/>
         {% EndIF %}
         {% IF CurrentADC.PropValue("responseTextPosition") = "bottom" or CurrentADC.PropValue("responseTextPosition") = "right" Then %}
             <div class="response_text">{%:= caption %}</div>
@@ -96,7 +96,7 @@ For i = 1 To arr.Count
             <div class="response_text">{%:= caption %}</div>
         {% EndIF %}
         {% IF image <> "" Then %}
-            <img src="{%= image %}" />
+            <img src="{%= image %}" alt="{%:= caption %}"/>
         {% EndIF %}
         {% IF CurrentADC.PropValue("responseTextPosition") = "bottom" or CurrentADC.PropValue("responseTextPosition") = "right" Then %}
             <div class="response_text">{%:= caption %}</div>
