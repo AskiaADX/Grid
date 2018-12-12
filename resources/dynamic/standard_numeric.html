@@ -12,8 +12,8 @@ Dim rightLabel = CurrentADC.PropValue("rightLabel")
 Dim bottomLabel = CurrentADC.PropValue("bottomLabel")
 Dim leftLabel = CurrentADC.PropValue("leftLabel")
 
-Dim arr = CurrentQuestion.ParentLoop.ParentLoop.Answers
-Dim ar = CurrentQuestion.ParentLoop.Answers
+Dim arr = CurrentQuestion.ParentLoop.ParentLoop.AvailableAnswers
+Dim ar = CurrentQuestion.ParentLoop.AvailableAnswers
 Dim i
 Dim j
 For i = 1 To arr.Count

@@ -7,7 +7,7 @@
   <info>
     <name>Grid</name>
     <guid>1a69f3de-ba10-461f-9516-0a1cb1feb841</guid>
-    <version>2.0.1</version>
+    <version>3.0.0</version>
     <date>2015-02-13</date>
     <description><![CDATA[Describe your ADC here
         	New ADC grid control
@@ -21,7 +21,8 @@
         Notes:
           v1.0.1 - fixed layout bug when labels showing for mobile
 		  v2.0.0 - Theme implementation
-		  v2.0.2 - Add alt attribute to img]]></description>
+		  v2.0.2 - Add alt attribute to img
+		  v3.0.0 - AvailableAnswers]]></description>
     <company>Askia</company>
     <author><![CDATA[Paul Ferreira <paulf@askia.com>]]></author>
     <site>http://www.askia.com</site>
@@ -30,7 +31,7 @@
       <category>General</category>
     </categories>
     <constraints>
-      <constraint on="questions" numeric="true" single="true" chapter="false" date="false" multiple="false" open="false" requireParentLoop="false" />
+      <constraint on="questions" numeric="true" single="false" chapter="false" date="false" multiple="false" open="false" requireParentLoop="true" RequireLoopDepth="true" />
       <constraint on="controls" responseblock="true" textbox="true" checkbox="false" label="false" listbox="false" radiobutton="false" />
       <constraint on="responses" max="*" min="*" />
     </constraints>
