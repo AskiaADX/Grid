@@ -7,22 +7,9 @@
   <info>
     <name>Grid</name>
     <guid>1a69f3de-ba10-461f-9516-0a1cb1feb841</guid>
-    <version>3.0.2</version>
-    <date>2015-02-13</date>
-    <description><![CDATA[Describe your ADC here
-        	New ADC grid control
-        Tested in:
-          List the browsers name and version where the ADC should work on.
-          
-        Dependencies:
-          - Name of the 3rd party resource. Version. URL 
-          - Name of the 3rd party resource. Version. URL
-        
-        Notes:
-          v1.0.1 - fixed layout bug when labels showing for mobile
-		  v2.0.0 - Theme implementation
-		  v2.0.2 - Add alt attribute to img
-		  v3.0.0 - AvailableAnswers]]></description>
+    <version>3.1.0</version>
+    <date>2022-09-13</date>
+    <description><![CDATA[New ADC grid control]]></description>
     <company>Askia</company>
     <author><![CDATA[Paul Ferreira <paulf@askia.com>]]></author>
     <site>http://www.askia.com</site>
@@ -44,20 +31,20 @@
       <content fileName="standard.css" type="css" mode="dynamic" position="head" />
       <content fileName="standard.html" type="html" mode="dynamic" position="placeholder" />
       <content fileName="standard_numeric.html" type="html" mode="dynamic" position="none" />
-      <content fileName="es5-shim.min.js" type="javascript" mode="share" position="head">
+      <content fileName="es5-shim.min.js" type="javascript" mode="static" position="head">
         <yield><![CDATA[
-          
+
           <!--[if lt IE 10]>
-            <script type="text/javascript" src="{%= CurrentADC.URLTo("share/es5-shim.min.js") %}"></script>
+            <script type="text/javascript" src="{%= CurrentADC.URLTo("static/es5-shim.min.js") %}"></script>
           <![endif]-->
-          
+
         ]]></yield>
       </content>
-      <content fileName="jquery-1.11.1.min.js" type="javascript" mode="share" position="head" />
-      <content fileName="modernizr.custom.20117.js" type="javascript" mode="static" position="head" />
-      <content fileName="jquery-ui-1.10.4.drag.min.js" type="javascript" mode="static" position="head" />
-      <content fileName="jquery.ui.touch-punch.min.js" type="javascript" mode="share" position="head" />
-      <content fileName="jquery.transit.min.js" type="javascript" mode="share" position="head" />
+      <content fileName="jquery-3.6.0.min.js" type="javascript" mode="static" position="head" />
+      <content fileName="modernizr.custom.js" type="javascript" mode="static" position="head" />
+      <content fileName="jquery-ui.min.js" type="javascript" mode="static" position="head" />
+      <content fileName="jquery.ui.touch-punch.min.js" type="javascript" mode="static" position="head" />
+      <content fileName="jquery.transit.min.js" type="javascript" mode="static" position="head" />
       <content fileName="grid.js" type="javascript" mode="static" position="head" />
       <content fileName="standard.js" type="javascript" mode="dynamic" position="foot" />
       <content fileName="standard_numeric.js" type="javascript" mode="dynamic" position="none" />
@@ -426,9 +413,9 @@
     <category id="responseLayout" name="Response Layout">
       <property xsi:type="standardProperty" id="responseTextPosition" name="Label Text Position" type="string" mode="static">
         <description><![CDATA[
-          
+
 	          Set position for text in responses in relation to images
-	        
+
         ]]></description>
         <value><![CDATA[bottom]]></value>
         <options>
@@ -657,9 +644,9 @@
     <category id="fallback" name="Fallback">
       <property xsi:type="standardProperty" id="orientation" name="Orientation" type="string" mode="static">
         <description><![CDATA[
-          
+
 	          Response block orientation
-	        
+
         ]]></description>
         <value><![CDATA[vertical]]></value>
         <options>
@@ -669,9 +656,9 @@
       </property>
       <property xsi:type="standardProperty" id="fbImageWidth" name="Image Width" type="number" mode="static">
         <description><![CDATA[
-          
+
 	          Set image width for fallback
-			
+
         ]]></description>
         <value><![CDATA[100]]></value>
       </property>

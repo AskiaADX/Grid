@@ -1,7 +1,7 @@
 /* standard_default.js */
-$(window).load(function() {
+$(window).on('load', function() {
 	$('#adc_{%= CurrentADC.InstanceId %}').adcGrid({
-		
+
 		maxWidth : '{%= CurrentADC.PropValue("maxWidth") %}',
 		controlWidth : '{%= CurrentADC.PropValue("controlWidth") %}',
 		maxImageWidth : '{%= CurrentADC.PropValue("maxImageWidth") %}',
