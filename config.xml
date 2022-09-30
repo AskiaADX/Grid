@@ -7,8 +7,8 @@
   <info>
     <name>Grid</name>
     <guid>1a69f3de-ba10-461f-9516-0a1cb1feb841</guid>
-    <version>3.1.0</version>
-    <date>2022-09-13</date>
+    <version>3.1.1</version>
+    <date>2022-09-30</date>
     <description><![CDATA[New ADC grid control]]></description>
     <company>Askia</company>
     <author><![CDATA[Paul Ferreira <paulf@askia.com>]]></author>

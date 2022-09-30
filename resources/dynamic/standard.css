@@ -15,9 +15,6 @@ Dim responseSelectedBorderThickness =CurrentADC.PropValue("responseSelectedBorde
 Dim responseSelectedBorderStyle =CurrentADC.PropValue("responseSelectedBorderStyle")
 Dim borderRadius =CurrentADC.PropValue("borderRadius")
 
-Dim responseTextAlign =CurrentADC.PropValue("responseTextAlign")
-Dim responseImageAlignment =CurrentADC.PropValue("responseImageAlignment")
-Dim responseAlign =CurrentADC.PropValue("responseAlign")
 Dim displayResponseText =CurrentADC.PropValue("displayResponseText")
 Dim responseTextPosition =CurrentADC.PropValue("responseTextPosition")
 
@@ -93,39 +90,33 @@ IF startAreaWidth = "50%" And dropAreaContainerWidthHeight = "50%" Then
 EndIF
 %}
 
-/* General */
-#adc_{%= CurrentADC.InstanceId%} 
-{ 
-	text-align:{%= responseAlign%};
-}
-
 /* Reponses */
 #adc_{%= CurrentADC.InstanceId%} .responseItem, #adc_{%= CurrentADC.InstanceId%} .responseItemMini
-{   
-	
+{
+
 	/* Decoration */
 	{% IF borderThickness = "none" Then %}
 		border: none;
 	{% Else %}
 		border: {%= borderThickness%} {%= borderStyle%} rgb({%= borderColour%});
-	{% EndIF %}	
+	{% EndIF %}
 	background-color: rgb({%= responseColourPrimary%});
-	
+
 	/* Effects */
-	-webkit-border-radius:	{%= borderRadius%}; 
-	-moz-border-radius:		{%= borderRadius%}; 
-	-khtml-border-radius:	{%= borderRadius%}; 
+	-webkit-border-radius:	{%= borderRadius%};
+	-moz-border-radius:		{%= borderRadius%};
+	-khtml-border-radius:	{%= borderRadius%};
 	border-radius:			{%= borderRadius%};
-	
+
 	-webkit-box-shadow: {%= responseShadow%};
 	-moz-box-shadow: {%= responseShadow%};
 	box-shadow: {%= responseShadow%};
-	
+
 	text-align: center;
-		
+
 	height: {%= responseHeight%};
 	width: {%= responseWidth%};
-	
+
 	padding: {%= responsePadding%};
 	{% IF startAreaResponseAlign = "center" Then %}
 		float:none;
@@ -139,14 +130,14 @@ EndIF
 		margin: {%= responseMargin%};
 		float:right;
 	{% EndIF %}
-	
-	
+
+
 	z-index: 100;
 }
 
 #adc_{%= CurrentADC.InstanceId%} .responseItem:hover, #adc_{%= CurrentADC.InstanceId%} .responseItemMini:hover
 {
-	
+
 	/* Decoration */
 	{% IF showResponseHoverBorder = "1" Then %}
 		border: {%= responseHoverBorderThickness%} {%= responseHoverBorderStyle%} rgb({%= responseHoverBorderColour%});
@@ -160,64 +151,62 @@ EndIF
 }
 
 #adc_{%= CurrentADC.InstanceId%} .responseItem img, #adc_{%= CurrentADC.InstanceId%} .responseItemMini img
-{  
+{
 	pointer-events:none;
 	margin:0px auto;
 	vertical-align:middle;
-	float:{%= responseImageAlignment%};
 	padding:{%= responseImagePadding%};
 }
 
-#adc_{%= CurrentADC.InstanceId%} .response_text 
-{ 
+#adc_{%= CurrentADC.InstanceId%} .response_text
+{
 	pointer-events:none;
 	display:{%= displayResponseText%};
 	font-size:{%= fontSize%};
-	text-align:{%= responseTextAlign%};
 	color:rgb({%= fontColour%});
-	
+
 	padding:{%= responseTextPadding%};
 	line-height:{%= responseTextLineHeight%};
-	
+
 	{% IF responseTextPosition = "left" or responseTextPosition = "right" Then %}
 		float: {%= responseTextPosition%};
 	{% EndIF %}
-	
+
 	word-wrap: break-word;
 }
 
-#adc_{%= CurrentADC.InstanceId%} .responseItem:hover .response_text, #adc_{%= CurrentADC.InstanceId%} .responseItemMini:hover .response_text 
-{ 
+#adc_{%= CurrentADC.InstanceId%} .responseItem:hover .response_text, #adc_{%= CurrentADC.InstanceId%} .responseItemMini:hover .response_text
+{
 	{% IF showResponseHoverFontColour = "1" Then %}
 		color:rgb({%= responseHoverFontColour%});
 	{% EndIF %}
 }
 
-#adc_{%= CurrentADC.InstanceId%} .startArea { 
-	width:{%= startAreaWidth%}; 
-	
+#adc_{%= CurrentADC.InstanceId%} .startArea {
+	width:{%= startAreaWidth%};
+
 	{% IF controlAlign = "center" Then %}
 		margin:0px auto;
 	{% EndIF %}
-	
+
 	/* Decoration */
 	{% IF startAreaBorderThickness = "none" Then %}
 		border: none;
 	{% Else %}
 		border: {%= startAreaBorderThickness%} {%= startAreaBorderStyle%} rgb({%= startAreaBorderColour%});
-	{% EndIF %}	
+	{% EndIF %}
 	background-color: rgba({%= startAreaColourPrimary%},0);
-	
+
 	-webkit-box-shadow: {%= startAreaShadow%};
 	-moz-box-shadow: {%= startAreaShadow%};
 	box-shadow: {%= startAreaShadow%};
-	
+
 	/* Effects */
-	-webkit-border-radius:	{%= startAreaBorderRadius%}; 
-	-moz-border-radius:		{%= startAreaBorderRadius%}; 
-	-khtml-border-radius:	{%= startAreaBorderRadius%}; 
+	-webkit-border-radius:	{%= startAreaBorderRadius%};
+	-moz-border-radius:		{%= startAreaBorderRadius%};
+	-khtml-border-radius:	{%= startAreaBorderRadius%};
 	border-radius:			{%= startAreaBorderRadius%};
-	
+
 	{% IF startAreaPosition = "left" Then %}
 		float:left;
 	{% ELSEIF startAreaPosition = "right" Then %}
@@ -227,32 +216,32 @@ EndIF
 	{% EndIF %}
 }
 
-#adc_{%= CurrentADC.InstanceId%} .gridOuter { 
-	width:{%= dropAreaContainerWidthHeight%}; 
-	height:{%= dropAreaContainerWidthHeight%}; 
-	
+#adc_{%= CurrentADC.InstanceId%} .gridOuter {
+	width:{%= dropAreaContainerWidthHeight%};
+	height:{%= dropAreaContainerWidthHeight%};
+
 	{% IF controlAlign = "center" Then %}
 		margin:0px auto;
 	{% EndIF %}
-	
+
 	/* Decoration */
 	{% IF dropAreaBorderThickness = "none" Then %}
 		border: none;
 	{% Else %}
 		border: {%= dropAreaBorderThickness%} {%= dropAreaBorderStyle%} rgb({%= dropAreaBorderColour%});
-	{% EndIF %}	
+	{% EndIF %}
 	background-color: rgb({%= dropAreaColourPrimary%});
-	
+
 	-webkit-box-shadow: {%= dropAreaShadow%};
 	-moz-box-shadow: {%= dropAreaShadow%};
 	box-shadow: {%= dropAreaShadow%};
-	
+
 	/* Effects */
-	-webkit-border-radius:	{%= dropAreaBorderRadius%}; 
-	-moz-border-radius:		{%= dropAreaBorderRadius%}; 
-	-khtml-border-radius:	{%= dropAreaBorderRadius%}; 
+	-webkit-border-radius:	{%= dropAreaBorderRadius%};
+	-moz-border-radius:		{%= dropAreaBorderRadius%};
+	-khtml-border-radius:	{%= dropAreaBorderRadius%};
 	border-radius:			{%= dropAreaBorderRadius%};
-	
+
 	{% IF startAreaPosition = "left" Then %}
 		float:right;
 	{% ELSEIF startAreaPosition = "right" Then %}
@@ -262,13 +251,13 @@ EndIF
 	{% EndIF %}
 }
 
-#adc_{%= CurrentADC.InstanceId%} .responseActive { 
-	/* Decoration */	
+#adc_{%= CurrentADC.InstanceId%} .responseActive {
+	/* Decoration */
 	{% IF responseSelectedBorderThickness = "none" Then %}
 		border: none;
 	{% Else %}
 		border: {%= responseSelectedBorderThickness%} {%= responseSelectedBorderStyle%} rgb({%= responseSelectedBorderColour%});
-	{% EndIF %}	
+	{% EndIF %}
 	background-color: rgb({%= responseSelectedColourPrimary%});
 }
 
@@ -282,29 +271,29 @@ EndIF
 		border: none;
 	{% Else %}
 		border: {%= labelBorderThickness%} {%= labelBorderStyle%} rgb({%= labelBorderColour%});
-	{% EndIF %}	
+	{% EndIF %}
 	background-color: rgb({%= labelColourPrimary%});
-	
+
 	/* Effects */
-	-webkit-border-radius:	{%= borderRadius%}; 
-	-moz-border-radius:		{%= borderRadius%}; 
-	-khtml-border-radius:	{%= borderRadius%}; 
+	-webkit-border-radius:	{%= borderRadius%};
+	-moz-border-radius:		{%= borderRadius%};
+	-khtml-border-radius:	{%= borderRadius%};
 	border-radius:			{%= borderRadius%};
-	
+
 	-webkit-box-shadow: {%= labelShadow%};
 	-moz-box-shadow: {%= labelShadow%};
 	box-shadow: {%= labelShadow%};
-	
+
 	text-align: center;
-	
+
 	color: rgb({%= labelFontColour%});
-	
+
 	padding: {%= labelPadding%};
-	
+
 	font-size:{%= fontSize%};
 }
 
-#adc_{%= CurrentADC.InstanceId%} .axisLabel.top .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.bottom .labelTxt { 
+#adc_{%= CurrentADC.InstanceId%} .axisLabel.top .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.bottom .labelTxt {
 	{% IF maxLabelHeight <> "" THEN %}
 		max-height: {%= maxLabelHeight %};
 	{% EndIF %}
@@ -315,21 +304,21 @@ EndIF
 	{% EndIF %}
 }
 #adc_{%= CurrentADC.InstanceId%} .axisLabel.top .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.bottom .labelTxt,
-#adc_{%= CurrentADC.InstanceId%} .axisLabel.left .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.right .labelTxt { 
+#adc_{%= CurrentADC.InstanceId%} .axisLabel.left .labelTxt, #adc_{%= CurrentADC.InstanceId%} .axisLabel.right .labelTxt {
 	{% IF minLabelWidth <> "" THEN %}
 		min-width: {%= minLabelWidth %};
 	{% EndIF %}
 }
 
 #adc_{%= CurrentADC.InstanceId%} .gridCell {
-	border-left:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
-	border-top:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+	border-left:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%});
+	border-top:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%});
 }
-#adc_{%= CurrentADC.InstanceId%} .gridCell.lastRow { 
-	border-bottom:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+#adc_{%= CurrentADC.InstanceId%} .gridCell.lastRow {
+	border-bottom:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%});
 }
 #adc_{%= CurrentADC.InstanceId%} .gridCell.lastCol {
-	border-right:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%}); 
+	border-right:{%= gridSquareBorderThickness%} {%= gridSquareBorderStyle%} rgb({%= gridSquareBorderColour%});
 }
 #adc_{%= CurrentADC.InstanceId%} .innerTarget .top td { font-size:{%= fontSize%}; }
 #adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .tl, #adc_{%= CurrentADC.InstanceId%} .innerTarget .bottom .br {
@@ -338,7 +327,7 @@ EndIF
 	{% Else %}
 		opacity:0;
 	{% EndIF %}
-	
+
 	background: rgb({%= dropTargetColourSecondary%});
 	background: -moz-linear-gradient(45deg,  rgb({%= dropTargetColourSecondary%}) 0%, rgb({%= dropTargetColourSecondary%}) 50%, rgb({%= dropTargetColourPrimary%}) 50%, rgb({%= dropTargetColourPrimary%}) 100%);
 	background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgb({%= dropTargetColourSecondary%})), color-stop(50%,rgb({%= dropTargetColourSecondary%})), color-stop(50%,rgb({%= dropTargetColourPrimary%})), color-stop(100%,rgb({%= dropTargetColourPrimary%})));
